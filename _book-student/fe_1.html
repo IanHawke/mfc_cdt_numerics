@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Numerical Methods for MFC CDT - 3&nbsp; Finite Elements</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./fe_2.html" rel="next">
+<link href="./spectral.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fe_1.html">Finite Elements</a></li><li class="breadcrumb-item"><a href="./fe_1.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Finite Elements</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Numerical Methods for MFC CDT</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Numerical-Methods-for-MFC-CDT.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Numerical-Methods-for-MFC-CDT.docx">
+              <i class="bi bi-bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Numerical-Methods-for-MFC-CDT.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fd_1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Climate models</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Spectral</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./spectral.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Spectral methods</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Finite Elements</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fe_1.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Finite Elements</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fe_2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Two dimensions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./finite_elements_3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Time evolution</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./finite_elements_4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Flexibility with efficiency</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix_background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Background material</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix_order.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Order of accuracy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix_lax.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Lax Equivalence Theorem</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#one-dimension-time-independent" id="toc-one-dimension-time-independent" class="nav-link active" data-scroll-target="#one-dimension-time-independent"><span class="header-section-number">3.1</span> One dimension, time independent</a></li>
+  <li><a href="#boundary-conditions" id="toc-boundary-conditions" class="nav-link" data-scroll-target="#boundary-conditions"><span class="header-section-number">3.2</span> Boundary conditions</a></li>
+  <li><a href="#weak-form" id="toc-weak-form" class="nav-link" data-scroll-target="#weak-form"><span class="header-section-number">3.3</span> Weak form</a></li>
+  <li><a href="#function-representation" id="toc-function-representation" class="nav-link" data-scroll-target="#function-representation"><span class="header-section-number">3.4</span> Function representation</a></li>
+  <li><a href="#the-element-viewpoint" id="toc-the-element-viewpoint" class="nav-link" data-scroll-target="#the-element-viewpoint"><span class="header-section-number">3.5</span> The element viewpoint</a></li>
+  <li><a href="#linking-elements-to-equations" id="toc-linking-elements-to-equations" class="nav-link" data-scroll-target="#linking-elements-to-equations"><span class="header-section-number">3.6</span> Linking elements to equations</a></li>
+  <li><a href="#algorithm" id="toc-algorithm" class="nav-link" data-scroll-target="#algorithm"><span class="header-section-number">3.7</span> Algorithm</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fe_1.html">Finite Elements</a></li><li class="breadcrumb-item"><a href="./fe_1.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Finite Elements</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-fe1" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Finite Elements</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>We have seen that approximating a PDE using finite differences is straightforward (which both helps a human to implement it, and a computer to solve it very efficiently). However, we have also seen that the errors introduced can be both larger than we want and difficult to control, introducing unphysical effects (incorrect wave propagation, loss of monotonicity, loss of positivity, etc).</p>
+<p>We also saw that high accuracy can be maintained by using spectral methods, linked to an approximation of the unknowns in terms of a series expansion of known functions (such as a Fourier series). However, these have problems near steep gradients (spectral ringing or Gibbs oscillations) which can again produce unphysical effects. They also couple every data point in the domain, which makes them less straightforward and more computationally expensive.</p>
+<p>Finally, we saw through finite volume methods how general unstructured grids could be used, and how a suitable choice of how to represent the function some key features (conservation of mass, monotonicity) can be preserved. These schemes are more complex but still only couple a limited number of points. The methods introduced so far have relatively low orders of accuracy.</p>
+<p>Our aim here is to discuss <em>finite element</em> methods. These have the flexibility of finite volume methods whilst (in principle) both allowing for high order (even spectral) accuracy and also allowing for key physical properties being maintained. They are necessarilly more complex, so we need to spend more time discussing the background theory of the mathematics and the software engineering of the implementation.</p>
+<p>In a finite element method the domain is split into <em>elements</em> which are (in most ways) indistinguishable from finite volume cells. In finite element methods there is no expectation that the elements and their edges and nodes which bound the elements have any structure to them.</p>
+<p>The notation in this section largely follows <span class="citation" data-cites="hughes2012finite">(<a href="references.html#ref-hughes2012finite" role="doc-biblioref">Hughes 2012</a>)</span>.</p>
+<section id="one-dimension-time-independent" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="one-dimension-time-independent"><span class="header-section-number">3.1</span> One dimension, time independent</h2>
+<p>Take the advection-diffusion equation describing the motion of pollution concentration with a source of pollution, (<a href="fd_1.html#eq-fd1-advection-sources" class="quarto-xref">Equation&nbsp;<span>1.4</span></a>),</p>
+<p><span id="eq-fe1-adv_diff"><span class="math display">\[
+\frac{D \Psi}{D t} = \frac{\partial \Psi}{\partial t} + \mathbf{u} \cdot \nabla \Psi = S + \mu_{\Psi}\nabla^2 \Psi.
+\tag{3.1}\]</span></span></p>
+<p>For now we will restrict to one spatial dimension and look for the <em>steady state</em> solution where the pollution generated by the source <span class="math inline">\(S\)</span> is balanced by the diffusion term with coefficient <span class="math inline">\(\mu_{\Psi} = \mu\)</span>, assuming that the wind velocity vanishes. We will also absorb the value of the diffusion coefficient <span class="math inline">\(\mu\)</span> into the source <span class="math inline">\(S\)</span>. Therefore the equation to solve is</p>
+<p><span id="eq-fe1-1d-adv-diff-steady"><span class="math display">\[
+0 = S + \partial_{xx} \Psi .
+\tag{3.2}\]</span></span></p>
+<p>To be concrete we will assume that the domain on which we are solving is <span class="math inline">\(x \in [0, 1]\)</span>, that the amount of pollution at the left boundary is fixed, and that the flux of pollution at the right boundary is also fixed,</p>
+<p><span id="eq-fe1-1d-bcs"><span class="math display">\[
+\Psi(0) = \alpha, \quad \partial_x \Psi |_{x=1} = \beta.
+\tag{3.3}\]</span></span></p>
+</section>
+<section id="boundary-conditions" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="boundary-conditions"><span class="header-section-number">3.2</span> Boundary conditions</h2>
+<p>As finite element methods are designed to work on complex domains with complex boundaries, the boundary conditions are built in at the mathematical level. We need to consider the different types separately.</p>
+<p>We remove the Dirichlet boundary condition (here at <span class="math inline">\(x=0\)</span>) by writing</p>
+<p><span id="eq-fe1-bcs_1"><span class="math display">\[
+\Psi(x) = \psi(x) + q(x),
+\tag{3.4}\]</span></span></p>
+<p>where <span class="math inline">\(q(x)\)</span> is a <em>known</em> function chosen so that <span class="math inline">\(q(0) = \alpha\)</span>. That means that <span class="math inline">\(\psi(0) = 0\)</span>, and <span class="math inline">\(\psi\)</span> satisfies homoegeneous boundary conditions. We will solve for <span class="math inline">\(\psi\)</span> and then put the boundary condition back in later. This can either be done globally (by making <span class="math inline">\(q\)</span> a constant, or non-zero eveywhere), or locally (by making <span class="math inline">\(q\)</span> non-zero only in a small region). The local approach is standard.</p>
+<p>Neumann boundaries, however, are built into the way the method works.</p>
+</section>
+<section id="weak-form" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="weak-form"><span class="header-section-number">3.3</span> Weak form</h2>
+<p>Now we want to remove the second derivatives from the problem, as it is easier to reason about first derivatives alone. When working with finite volumes we saw that we could remove derivatives by integrating over the domain. However, we then ended up working with volume averaged quantities. To keep our steps more general, we first multiply by an <em>arbitrary, smooth</em> function <span class="math inline">\(w(x)\)</span>, and then integrate over the domain. As we already know the value of the solution at the left boundary due to the Dirichlet boundary condition, we can weight its value there to zero by enforcing <span class="math inline">\(w(0) = 0\)</span>.</p>
+<p>The function <span class="math inline">\(w(x)\)</span> is referred to as the <em>weighting</em> function. Using integration by parts the steady state advection diffusion equation becomes</p>
+<p><span id="eq-fe1-1d-adv-diff-steady-weak-full"><span class="math display">\[
+\begin{split}
+0 = \left[  w(x) \partial_x \Psi(x) \right]_0^1 - \int_0^1  \partial_x \Psi(x) \partial_x w(x) \, \text{d}x \\ + \int_0^1 w(x) S(x) \, \text{d}x.
+\end{split}
+\tag{3.5}\]</span></span></p>
+<p>We introduce the “inner product” notation</p>
+<p><span id="eq-fe1-1d-adv-diff-steady-weak-inner-product"><span class="math display">\[
+(f, g) = \int_0^1 f(x) g(x) \, \text{d}x
+\tag{3.6}\]</span></span></p>
+<p>and use the boundary conditions to give</p>
+<p><span id="eq-fe1-1d-adv-diff-steady-weak"><span class="math display">\[
+(\partial_x \psi,  \partial_x w) = w(1) \beta - (\partial_x q,  \partial_x w) + ( w, S ).
+\tag{3.7}\]</span></span></p>
+<p>This is the <em>weak form</em> of the equations. It is written in this fashion as the unknown term (<span class="math inline">\(\psi(x)\)</span>) is on the left hand side, but all terms on the right are either known (<span class="math inline">\(\beta, q, S\)</span>) or arbitrary (<span class="math inline">\(w\)</span>). It can be proved that solutions of the <em>strong form</em> in (<a href="#eq-fe1-1d-adv-diff-steady" class="quarto-xref">Equation&nbsp;<span>3.2</span></a>) are also solutions of (<a href="#eq-fe1-1d-adv-diff-steady-weak" class="quarto-xref">Equation&nbsp;<span>3.7</span></a>).</p>
+</section>
+<section id="function-representation" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="function-representation"><span class="header-section-number">3.4</span> Function representation</h2>
+<p>In finite volume methods the domain is split into cells, or volumes, within which <span class="math inline">\(\Psi\)</span> is presented by a single number (its volume average). In finite element methods the domain is split into elements, which in many ways are indistinguishable from volumes, within which <span class="math inline">\(\Psi\)</span> and any other function is represented in terms of a series expansion. For example, we could choose within each element to represent <span class="math inline">\(\Psi\)</span> as a (truncated) Fourier series, or Taylor series.</p>
+<p>However, for practical purposes, we want to link the representations in neighbouring elements, but decouple the representations in elements that are not neighbours. To do this, we introduce <em>shape</em> or <em>basis</em> functions which are associated with the nodes of the grid.</p>
+<p>To make this concrete, take our domain <span class="math inline">\(x \in [0, 1]\)</span> and split it into two elements <span class="math inline">\(I_0 = [0, \tfrac{1}{2}]\)</span> and <span class="math inline">\(I_1 = [\tfrac{1}{2}, 1]\)</span>. The boundaries of the elemnts give us the three nodes <span class="math inline">\(\{ x_A \} = \{0, \tfrac{1}{2}, 1\}\)</span>. Here <span class="math inline">\({}_A\)</span> is a label - an integer labelling the nodes - which we count from <span class="math inline">\(0\)</span> (so <span class="math inline">\(A \in \{0, 1, 2\}\)</span>). We then write the function of interest, <span class="math inline">\(\psi\)</span>, as</p>
+<p><span id="eq-fe1-shape1"><span class="math display">\[
+\psi(x) = \sum_A \psi_A N_A(x),
+\tag{3.8}\]</span></span></p>
+<p>where <span class="math inline">\(N_A(x)\)</span> are the shape functions.</p>
+<p>We choose <span class="math inline">\(N_A(x)\)</span> to take the value <span class="math inline">\(1\)</span> at node <span class="math inline">\(x_A\)</span> and take the value <span class="math inline">\(0\)</span> at any other node. This immediately means that <span class="math inline">\(\psi_A = \psi(x_A)\)</span>. Therefore the nodal values behave much like a finite difference representation.</p>
+<p>We immediately note that our (approximate) solution process must compute, somehow, the values of <span class="math inline">\(\psi_A\)</span>. Some are already known: the boundary condition at <span class="math inline">\(x=0\)</span> in our case immediately implies that <span class="math inline">\(\psi_0 = 0\)</span>. The other values must be fixed by the solution of (<a href="#eq-fe1-1d-adv-diff-steady-weak" class="quarto-xref">Equation&nbsp;<span>3.7</span></a>).</p>
+<p>There are now many choices we can make to fix the shape functions. The simplest is to choose the shape functions to be piecewise linear. This gives</p>
+<p><span id="eq-fe1-shape-fns"><span class="math display">\[
+\begin{aligned}
+N_0(x) &amp;= \begin{cases} 1 - 2 x &amp; 0 \le x \le 1/2 \\ 0 &amp; 1/2 \le x \le 1 \end{cases} \\
+N_1(x) &amp;= \begin{cases}  2 x &amp; 0 \le x \le 1/2 \\ 2 - 2 x &amp; 1/2 \le x \le 1 \end{cases} \\
+N_2(x) &amp;= \begin{cases} 0 &amp; 0 \le x \le 1/2 \\ 2 x - 1 &amp; 1/2 \le x \le 1 \end{cases}
+\end{aligned}
+\tag{3.9}\]</span></span></p>
+<div id="cell-fig-fe1-shape-fns" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div id="fig-fe1-shape-fns" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fe1-shape-fns-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="fe_1_files/figure-html/fig-fe1-shape-fns-output-1.png" width="581" height="429" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fe1-shape-fns-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.1: Shape functions for a domain with two elements (hence three nodes).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>We now make the <em>Galerkin</em> assumption that the same function basis expansion is used for the unknown function <span class="math inline">\(\psi\)</span> and also for the test function <span class="math inline">\(w\)</span>. We write out <span class="math inline">\(w\)</span> and <span class="math inline">\(q\)</span> using the same shape functions. As noted above we enforce that <span class="math inline">\(q\)</span> drops immediately to zero away from the boundary, which means we write</p>
+<p><span id="eq-fe1-bcs_discrete"><span class="math display">\[
+q(x) = \alpha N_0(x).
+\tag{3.10}\]</span></span></p>
+<p>This means the weak form (<a href="#eq-fe1-1d-adv-diff-steady-weak" class="quarto-xref">Equation&nbsp;<span>3.7</span></a>) becomes</p>
+<p><span id="eq-fe1-1d-adv-diff-discrete-1"><span class="math display">\[
+\begin{split}
+\sum_B w_B \sum_A \psi_A ( \partial_x N_A,  \partial_x N_B ) = w_{N_\text{elements}} \beta - \\
+\alpha \sum_B w_B ( \partial_x N_0,  \partial_x N_B ) +
+\sum_B w_B ( N_B, S ) .
+\end{split}
+\tag{3.11}\]</span></span></p>
+<p>This has to be true for any choice of weight function <span class="math inline">\(w\)</span>, so for any choice of the coefficients <span class="math inline">\(w_B\)</span>. We gather terms as</p>
+<p><span id="eq-fe1-gather"><span class="math display">\[
+\sum_B w_B \left\{ \sum_A K_{AB} \psi_A - F_B \right\} = 0.
+\tag{3.12}\]</span></span></p>
+<p>To hold for any choice of weight function the term in curly brackets must vanish. Here the <em>stiffness matrix</em> <span class="math inline">\(K\)</span> and <em>force vector</em> <span class="math inline">\(\mathbf{F}\)</span> are independent of <span class="math inline">\(\psi\)</span>. The steps here are very similar to those in the implicit finite difference methods such as BTCS. This gives</p>
+<p><span id="eq-fe1-matrix_form"><span class="math display">\[
+K \symbf{\psi} = \mathbf{F},
+\tag{3.13}\]</span></span></p>
+<p>where the coefficients of the stiffness matrix <span class="math inline">\(K\)</span> are given by</p>
+<p><span id="eq-fe1-stiffness-matrix"><span class="math display">\[
+K_{AB} = \int_0^1 \partial_x N_A(x) \partial_x N_B(x) \, \text{d}x
+\tag{3.14}\]</span></span></p>
+<p>and the coefficients of the <em>force vector</em> <span class="math inline">\(\mathbf{F}\)</span> are given by</p>
+<p><span id="eq-fe1-force-vector"><span class="math display">\[
+\begin{split}
+F_B = \beta \delta^{N_\text{elements}}_B + \int_0^1 N_B(x) S(x) \, \text{d}x \, - \alpha \int_0^1 \partial_x N_A(x) \partial_x N_B(x) \, \text{d}x .
+\end{split}
+\tag{3.15}\]</span></span></p>
+<p>Here <span class="math inline">\(\delta^C_B\)</span> is the Kronecker delta (zero except when <span class="math inline">\(B \equiv C\)</span>, where it is one) and encodes the Neumann boundary value.</p>
+<p>Note that the final term in the force vector (which results from the Dirichlet boundary condition) has a very similar form to the entries of the stiffness matrix. However, the shape function <span class="math inline">\(N_0\)</span> is non-zero at the boundary of the domain, which can cause issues with directly using the stiffness matrix here. For that, and other reasons, it is best to use the element viewpoint below.</p>
+<div id="exr-fe1-task2" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.1</strong></span> &nbsp;</p>
+<ol type="1">
+<li>Compute (analytically) the coefficients of the stiffness matrix given the shape functions above in (<a href="#eq-fe1-shape-fns" class="quarto-xref">Equation&nbsp;<span>3.9</span></a>).</li>
+<li>Compute (analytically) the coefficients of the force vector when <span class="math inline">\(S(x) = 1 - x\)</span>.</li>
+<li>Solve (numerically) for <span class="math inline">\(\psi_A\)</span> and plot the resulting solution for <span class="math inline">\(\psi(x)\)</span>. In the simplified case <span class="math inline">\(\alpha = 0 = \beta\)</span> we can choose <span class="math inline">\(q(x) \equiv 0\)</span>, so that <span class="math inline">\(\Psi = \psi\)</span>. Compare against the exact solution <span class="math inline">\(\Psi(x) = x (x^2 - 3 x + 3) / 6\)</span>.</li>
+</ol>
+</div>
+</section>
+<section id="the-element-viewpoint" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="the-element-viewpoint"><span class="header-section-number">3.5</span> The element viewpoint</h2>
+<p>This works surprisingly well given the small number of elements and associated nodes. However, as the sources get more complex we will need to work with more elements to improve accuracy. We need to go about this more systematically.</p>
+<p>First we note that in any element there are only two shape functions that are not zero. In the notation we have used so far element <span class="math inline">\(I_A = [x_{A}, x_{A+1}]\)</span> and the two non-zero shape functions have been <span class="math inline">\(N_{A}\)</span> and <span class="math inline">\(N_{A+1}\)</span>.</p>
+<p>Second, we note that in general the elements will have different sizes. In higher dimensions this gets ever more complicated. However, by using a coordinate transformation, we can take any element from the interval <span class="math inline">\([x_{A}, x_{A+1}]\)</span> to the interval <span class="math inline">\(\xi \in [-1, 1]\)</span>. We have</p>
+<p><span id="eq-fe1-element_1"><span class="math display">\[
+\begin{aligned}
+\xi(x) &amp;= \frac{2 x - x_{A} - x_{A+1}}{x_{A+1} - x_{A}}, \\
+x(\xi) &amp;= \frac{(x_{A+1} - x_{A}) \xi + x_{A} + x_{A+1}}{2} .
+\end{aligned}
+\tag{3.16}\]</span></span></p>
+<p>We can now write the two non-zero shape functions in terms of the <em>reference coordinates</em> <span class="math inline">\(\xi\)</span> as</p>
+<p><span id="eq-fe1-element_2"><span class="math display">\[
+N_a(\xi) = \tfrac{1}{2} (1 + \xi_a \xi), \quad a = 1, 2.
+\tag{3.17}\]</span></span></p>
+<p>The label <span class="math inline">\(a\)</span> is labelling the shape functions within the reference element, written in terms of the reference coordinates. These labels can be linked back to the original shape functions in the end.</p>
+<p>Now, we remember that the weak form is written in terms of the stiffness matrix and force vector, and these depend on integrals of the shape functions and their derivatives. Computing the derivatives in the reference coordinates is straightforward,</p>
+<p><span id="eq-fe1-element_3"><span class="math display">\[
+\partial_\xi N_a = \frac{(-1)^a}{2}.
+\tag{3.18}\]</span></span></p>
+<p>To map this back to derivatives in the original coordinates we require a Jacobian, which needs the derivatives of the coordinate transformation. This needs</p>
+<p><span id="eq-fe1-element_4"><span class="math display">\[
+\begin{aligned}
+\partial_x \xi &amp;= \frac{2}{x_{A+1} - x_{A}}, \\
+\partial_\xi x &amp;= \frac{x_{A+1} - x_{A}}{2}.
+\end{aligned}
+\tag{3.19}\]</span></span></p>
+<p>We can now compute the contribution that one single element <span class="math inline">\(e = I_A\)</span> makes. This is</p>
+<p><span id="eq-fe1-element_5"><span class="math display">\[
+\begin{aligned}
+k_{ab}^e &amp; = \int_{x_{A}}^{x_{A+1}} \partial_x N_a \partial_x N_b \, \text{d}x \\
+&amp;= \int_{-1}^1 \partial_{\xi} x  \partial_x N_a \partial_x N_b \, \text{d}\xi \\
+&amp;= \int_{-1}^1 \left(\partial_{\xi} x\right)^{-1}  \partial_\xi N_a \partial_\xi N_b \, \text{d}\xi \\
+&amp;= \frac{(-1)^{(a+b)}}{x_{A+1} - x_{A}}.
+\end{aligned}
+\tag{3.20}\]</span></span></p>
+<p>This is incredibly useful: there’s no need to do any integrals at all. Note that this gives a <span class="math inline">\(2 \times 2\)</span> matrix corresponding to a single element: to get the complete stiffness matrix we need to “add all these up”.</p>
+<p>The element force vector is, in general, more complex, as it involves an integral over the complex source <span class="math inline">\(S\)</span>. However, we can approximate this by writing the source in terms of its values at the nodes as well, so</p>
+<p><span id="eq-fe1-element_6"><span class="math display">\[
+S(x) = \sum_a S_a N_a(x),
+\tag{3.21}\]</span></span></p>
+<p>giving <span class="math inline">\(S_a = S(x(\xi_a))\)</span>. We can then compute, for the simple shape functions we use here,</p>
+<p><span id="eq-fe1-element_7"><span class="math display">\[
+f^e_a = \frac{x_{A+1}-x_{A}}{6} \begin{pmatrix} 2 f_1 + f_2 \\ f_1 + 2 f_2 \end{pmatrix} \, .
+\tag{3.22}\]</span></span></p>
+<p>Finally, we need to include the boundary condition terms in the force vector. To include the Neumann boundary condition at the right boundary we adjust the final entry,</p>
+<p><span id="eq-fe1-element_8"><span class="math display">\[
+F_{N_\text{elements}} \to F_{N_\text{elements}} + \beta.
+\tag{3.23}\]</span></span></p>
+<p>To include the Dirichlet boundary condition at the left boundary we adjust the first entry, which needs adjusting using <span class="math inline">\(\int \partial_x N_0 \partial_x N_B\)</span>. For the linear shape functions chosen here this is only non-zero within the first element, so we can use the <em>local</em> stiffness matrix to adjust the first entry,</p>
+<p><span id="eq-fe1-element_9"><span class="math display">\[
+F_0 \to F_0 - \alpha k^0_{12}.
+\tag{3.24}\]</span></span></p>
+<p>(Note that the numbering here has the first element number <span class="math inline">\(e=0\)</span> and the local labels <span class="math inline">\(a \in \{1, 2\}\)</span>)</p>
+</section>
+<section id="linking-elements-to-equations" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="linking-elements-to-equations"><span class="header-section-number">3.6</span> Linking elements to equations</h2>
+<p>Our goal is to construct a linear (matrix) equation to give us the solution <span class="math inline">\(\psi_A\)</span> at all nodes <span class="math inline">\(A\)</span> where it isn’t enforced by the boundary conditions (which, in the example so far, is all nodes except the left-hand boundary). We note that each <em>interior</em> node is linked to two elements, so contributions from the element matrix will affect more than one equation.</p>
+<p>To keep track of this, we construct the <em>location matrix</em> or <em>location array</em> <span class="math inline">\(LM\)</span> which, given the node number <span class="math inline">\(a \in \{1, 2\}\)</span> and the element number <span class="math inline">\(e\)</span> returns the associated equation number.</p>
+<p>Any node that is not to be included (as its value is given by a Dirichlet boundary condition) has its associated equation number <span class="math inline">\(A\)</span> set to <span class="math inline">\(-1\)</span>. The first node that must be included is given value <span class="math inline">\(0\)</span>. We then go element-by-element: the left-hand node of element <span class="math inline">\(e\)</span> is the same as the right-hand node of element <span class="math inline">\(e-1\)</span>, so picks up the same equation number. The right-hand node of element <span class="math inline">\(e\)</span>, if considered, then has equation number one higher than the left-hand node of that element. This translates directly into Python code:</p>
+<div id="08e9bf44" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>N_elements <span class="op">=</span> <span class="dv">4</span> <span class="co"># for example</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>LM <span class="op">=</span> np.zeros((<span class="dv">2</span>, N_elements), dtype<span class="op">=</span>np.int64)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> e <span class="kw">in</span> <span class="bu">range</span>(N_elements):</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> e<span class="op">==</span><span class="dv">0</span>:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Treat first element differently due to BC</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        LM[<span class="dv">0</span>, e] <span class="op">=</span> <span class="op">-</span><span class="dv">1</span> <span class="co"># Left hand node of first element</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                      <span class="co"># is not considered thanks to BC.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        LM[<span class="dv">1</span>, e] <span class="op">=</span> <span class="dv">0</span> <span class="co"># the first equation</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Left node of this element is </span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># right node of previous element</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        LM[<span class="dv">0</span>, e] <span class="op">=</span> LM[<span class="dv">1</span>, e<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        LM[<span class="dv">1</span>, e] <span class="op">=</span> LM[<span class="dv">0</span>, e] <span class="op">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now the <em>global</em> stiffness matrix and force vector can be assembled: for each element <span class="math inline">\(e\)</span> we construct the element <span class="math inline">\(k^e_{ab}\)</span> and <span class="math inline">\(f^e_b\)</span> and add the appropriate components, as</p>
+<p><span class="math display">\[
+\begin{aligned}
+K_{LM(a, e)\,LM(b,e)} &amp;= K_{LM(a, e)\,LM(b,e)} + k^e_{ab} &amp; a, b &amp;\in \{1, 2\}, \\
+f_{LM(b, e)} &amp;= f_{LM(b, e)} + f^e_b &amp; b &amp;\in \{1, 2\}.
+\end{aligned}
+\]</span></p>
+<p>Note that we need one more structure to keep track of the boundary conditions. As noted above, if a node is on a boundary then the value of the force vector needs modifying, either by including its value directly (in the case of a Neumann boundary) or by using some appropriate multiple of the local stiffness matrix (in the case of a Dirichlet boundary). This structure must map the node number to the value in the boundary condition; the location matrix can be used to check the boundary condition type.</p>
+</section>
+<section id="algorithm" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="algorithm"><span class="header-section-number">3.7</span> Algorithm</h2>
+<p>This gives our full algorithm:</p>
+<ol type="1">
+<li>Set the number of elements <span class="math inline">\(N_{\text{elements}}\)</span>.</li>
+<li>Set node locations <span class="math inline">\(x_A\)</span>, where <span class="math inline">\(A = 0, \dots, N_{\text{elements}}\)</span>.</li>
+<li>Set up the location matrix <span class="math inline">\(LM\)</span>.</li>
+<li>Set up a boundary value structure (in Python a dictionary would work).</li>
+<li>Set up arrays, initially all zero, for the global stiffness matrix (size <span class="math inline">\(N_{\text{elements}} \times N_{\text{elements}}\)</span>) and for vector (size <span class="math inline">\(N_{\text{elements}}\)</span>).</li>
+<li>For each element:
+<ol type="1">
+<li>Form the element stiffness matrix <span class="math inline">\(k^e_{ab}\)</span>.</li>
+<li>Form the element force vector <span class="math inline">\(f^e_b\)</span>.</li>
+<li>Add the contributions to the global stiffness matrix and force vector.</li>
+<li>Modify using the boundary values if needed.</li>
+</ol></li>
+<li>Solve <span class="math inline">\(K \symbf{\psi} = \mathbf{F}\)</span>.</li>
+</ol>
+<div id="exr-fe1-task3" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.2</strong></span> Write a finite element solver for the problem above, as a function that takes as input the number of elements and the source function <span class="math inline">\(S\)</span>, as well as the boundary conditions <span class="math inline">\(\alpha, \beta\)</span>. It should use a uniformly spaced grid, and return the nodes <span class="math inline">\(x_A\)</span> and the solution at the nodes <span class="math inline">\(\Psi_A = \psi_A + q_A\)</span>.</p>
+<p>Check that the function returns the same result as above when used with two elements and <span class="math inline">\(S(x) = 1 - x\)</span>.</p>
+<p>The apply the solver to the case <span class="math inline">\(S(x) = (1 - x)^2\)</span> with exact solution <span class="math inline">\(\Psi(x) = x (4 - 6 x + 4 x^2 - x^3) / 12\)</span>. Compute the 2-norm of the error and check how it converges with resolution.</p>
+<p>Finally check that the solver works on the case</p>
+<p><span id="eq-fe1-exr3_1"><span class="math display">\[
+S(x) = \begin{cases}
+1 &amp; |x - \tfrac{1}{2}| &lt; \tfrac{1}{4}, \\
+0 &amp; \text{otherwise}
+\end{cases}
+\tag{3.25}\]</span></span></p>
+<p>with boundary conditions</p>
+<p><span id="eq-fe1-exr3_2"><span class="math display">\[
+\alpha = \Psi(0) = 0.1, \quad \beta = \partial_x \Psi(1) = -0.2.
+\tag{3.26}\]</span></span></p>
+<p>The exact solution in this case is</p>
+<p><span id="eq-fe1-exr3_3"><span class="math display">\[
+\Psi = \begin{cases}
+0.3 x + 0.1 &amp; x &lt; \tfrac{1}{4} \\
+-\tfrac{1}{2} x^2 + 0.55 x + \tfrac{11}{160} &amp; \tfrac{1}{4} &lt; x &lt; \tfrac{3}{4} \\
+-0.2 x + 0.35 &amp; x &gt; \tfrac{3}{4}
+\end{cases}.
+\tag{3.27}\]</span></span></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It will be useful for later purposes to write helper functions that compute the global coordinates from the reference coordinates, and compute the elements matrices and vectors from the nodes.</p>
+</div>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-hughes2012finite" class="csl-entry" role="listitem">
+Hughes, T. J. R. 2012. <em>The Finite Element Method: Linear Static and Dynamic Finite Element Analysis</em>. Dover Civil and Mechanical Engineering. Dover Publications.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./spectral.html" class="pagination-link" aria-label="Spectral methods">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Spectral methods</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./fe_2.html" class="pagination-link" aria-label="Two dimensions">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Two dimensions</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

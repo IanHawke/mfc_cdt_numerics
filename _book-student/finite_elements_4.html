@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Numerical Methods for MFC CDT - 6&nbsp; Flexibility with efficiency</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./finite_elements_3.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fe_1.html">Finite Elements</a></li><li class="breadcrumb-item"><a href="./finite_elements_4.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Flexibility with efficiency</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Numerical Methods for MFC CDT</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Numerical-Methods-for-MFC-CDT.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Numerical-Methods-for-MFC-CDT.docx">
+              <i class="bi bi-bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Numerical-Methods-for-MFC-CDT.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fd_1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Climate models</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Spectral</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./spectral.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Spectral methods</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Finite Elements</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fe_1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Finite Elements</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fe_2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Two dimensions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./finite_elements_3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Time evolution</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./finite_elements_4.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Flexibility with efficiency</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix_background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Background material</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix_order.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Order of accuracy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix_lax.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Lax Equivalence Theorem</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-dg_basis" id="toc-sec-dg_basis" class="nav-link active" data-scroll-target="#sec-dg_basis"><span class="header-section-number">6.1</span> Function basis and weak form</a></li>
+  <li><a href="#sec-dg_modal" id="toc-sec-dg_modal" class="nav-link" data-scroll-target="#sec-dg_modal"><span class="header-section-number">6.2</span> Modal Discontinuous Galerkin</a></li>
+  <li><a href="#sec-dg_nodal" id="toc-sec-dg_nodal" class="nav-link" data-scroll-target="#sec-dg_nodal"><span class="header-section-number">6.3</span> Nodal Discontinuous Galerkin</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">6.4</span> Discussion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fe_1.html">Finite Elements</a></li><li class="breadcrumb-item"><a href="./finite_elements_4.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Flexibility with efficiency</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-fe4" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Flexibility with efficiency</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In addition to the issues with higher order schemes noted above, there is one wasteful step that is worth noting. Each time a higher order scheme reconstructs the data it constructs a high-order piecewise polynomial representation of the data everywhere. Then, in the time update, most of this information is thrown away. At the beginning of each timestep we only know the value of the function (for finite difference approaches) or its integral average (for finite volume approaches).</p>
+<p>Some alternative methods store the <em>moments</em> or <em>modes</em> of the solution, and update all of them. In these methods all of the information needed to evaluate the solution is available at all times and locations, and all the information is updated at every step. This should make the methods more efficient and more local (with a smaller stencil, and hence better on parallel machines). Their disadvantages will come in the timestep and with discontinuous data.</p>
+<p>The presentation here closely follows <span class="citation" data-cites="hesthaven2017numerical">(<a href="references.html#ref-hesthaven2017numerical" role="doc-biblioref">Hesthaven 2017</a>)</span> – check there for considerably more details, particularly on the theoretical results.</p>
+<section id="sec-dg_basis" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="sec-dg_basis"><span class="header-section-number">6.1</span> Function basis and weak form</h2>
+<p>Recall that in this chapter we are looking at the advection equation</p>
+<p><span id="eq-fe4-advection"><span class="math display">\[
+\Psi_t + u \Psi_x = 0.
+\tag{6.1}\]</span></span></p>
+<p>We want to be able to compute the value of the function <span class="math inline">\(\Psi(t, x)\)</span> at any point. We can do this by writing <span class="math inline">\(a\)</span> in terms of a <em>function basis</em> <span class="math inline">\(\phi_n(t, x)\)</span> as</p>
+<p><span id="eq-fe4-dg_fn_basis"><span class="math display">\[
+\Psi(t, x) = \sum_n \hat{\Psi}_n \phi_n(t, x).
+\tag{6.2}\]</span></span></p>
+<p>Here the <em>modes</em> or <em>modal coefficients</em> <span class="math inline">\(\hat{\Psi}_n\)</span> are constants. An example of a function basis would be</p>
+<p><span id="eq-fe4-dg_monomial_basis"><span class="math display">\[
+  \begin{aligned}
+    \phi_{0}(t, x) &amp;= 1, &amp; \phi_{1}(t, x) &amp;= x, &amp; \phi_{2}(t, x) &amp;= t, \\
+    \phi_{3}(t, x) &amp;= \tfrac{1}{2} x^2, &amp; \phi_{4}(t, x) &amp;= \tfrac{1}{2} t^2, &amp;
+    \phi_{5}(t, x) &amp;= x t.
+  \end{aligned}
+\tag{6.3}\]</span></span></p>
+<p>These six modes will perfectly describe any function that remains quadratic for all space and time.</p>
+<p>Note that the function basis plays a very similar role to the shape functions discussed earlier for other finite element methods. The crucial distinctions here are that (a) the function basis is confined to a single element whilst a shape function is linked to a node and can be non-zero in multiple elements, and (b) shape functions are chosen so that the coefficients are directly linked to the values of the function at nodes, whilst basis functions are typically not normalized in that way.</p>
+<p>It is often more convenient the explicitly separate space and time, as we saw using the semi-discrete approach in (<a href="finite_elements_3.html" class="quarto-xref"><span>Chapter 5</span></a>). In this case we can represent the solution using a purely spatial function basis, as</p>
+<p><span id="eq-fe4-dg_fn_basis_split"><span class="math display">\[
+  \Psi(t, x) = \sum_n \hat{\Psi}_n(t) \phi_n(x).
+\tag{6.4}\]</span></span></p>
+<p>Now the modes depend on time, and there will only be three basis functions needed to describe quadratic data.</p>
+<p>Clearly we cannot store an infinite number of modes. By restricting our sum to the <span class="math inline">\(m+1\)</span> modes by writing</p>
+<p><span id="eq-fe4-dg_fn_basis_split"><span class="math display">\[
+  \Psi(t, x) = \sum_{n=0}^{m} \hat{\Psi}_n(t) \phi_n(x)
+\tag{6.5}\]</span></span></p>
+<p>we are restricting out solution to live in a finite dimensional function space (denoted <span class="math inline">\(\mathbb{V}\)</span>) with basis <span class="math inline">\(\{ \phi_n \}, \ n = 0, \dots, m\)</span>. That means that, in general, any solution <span class="math inline">\(\Psi(t, x)\)</span> will have an error when plugged into the advection equation. We can pick out <em>a</em> solution by insisting that this error is orthogonal to <span class="math inline">\(\mathbb{V}\)</span>.</p>
+<p>To see how this works, write the error term as <span class="math inline">\(\epsilon(t, x)\)</span>. As our (infinite dimensional) function basis can describe any function, we expand the error in terms of the <span class="math inline">\(\phi_n\)</span> as well, as</p>
+<p><span id="eq-fe4-dg_error"><span class="math display">\[
+  \epsilon(t, x) = \sum_n \hat{\epsilon}_n(t) \phi_n(x).
+\tag{6.6}\]</span></span></p>
+<p>Therefore our advection equation, including the error term, becomes</p>
+<p><span id="eq-fe4-dg_advection"><span class="math display">\[
+  \sum_n \left[ \left( \frac{\partial \hat{\Psi}_n}{\partial t} - \hat{\epsilon}_n \right) \phi_n(x) +
+  u \hat{\Psi}_n \frac{\partial \phi_n}{\partial x}(x) \right] = 0.
+\tag{6.7}\]</span></span></p>
+<p>As our solution is finite dimensional this can be written as</p>
+<p><span id="eq-fe4-dg_advection2"><span class="math display">\[
+    \sum_{n=0}^{m} \left[ \frac{\partial \hat{\Psi}_n}{\partial t} \phi_n(x) +
+    u \hat{\Psi}_n \frac{\partial \phi_n}{\partial x}(x) \right] =
+    \sum_{n=m+1}^{\infty} \hat{\epsilon}_n \phi_n(x).
+\tag{6.8}\]</span></span></p>
+<p>We have used here that the orthogonality of the error requires <span class="math inline">\(\hat{\epsilon}_n\)</span> does not contribute for <span class="math inline">\(n = 0, \dots, m\)</span>. Using standard linear algebra techniques (as <span class="math inline">\(\phi_n\)</span> is a <em>basis</em>), we can get individual equations by taking the inner product with another member of the basis. If we were dealing with vectors in <span class="math inline">\(\mathbb{R}^n\)</span> then the inner product would be a vector dot product. As we are dealing with functions the inner product requires multiplication and integration over the domain,</p>
+<p><span id="eq-fe4-dg_inner_product"><span class="math display">\[
+  \langle f(x), \phi_l(x) \rangle = \int_V \text{d} x \, f(x) \phi_l(x).
+\tag{6.9}\]</span></span></p>
+<p>This will also write the conservation law in the integral, weak, form. This leads to, after integrating by parts,</p>
+<p><span id="eq-fe4-dg_advection3"><span class="math display">\[
+  \begin{split}
+    \sum_{n=0}^{m}  \left[ \frac{\partial \hat{\Psi}_n}{\partial t} \left( \int_V \text{d} x \ \phi_n(x) \phi_l(x) \right) + \int_{\partial V} u \hat{\Psi}_n \phi_n(x) \phi_l(x) - \right. \\
+    \left.  u  \hat{\Psi}_n \int_V \text{d} x \, \phi_n \frac{\partial \phi_l}{\partial x}(x) \right] = \sum_{n=m+1}^{\infty}  \hat{\epsilon}_n \int_V \text{d} x\, \phi_n(x) \phi_l(x).
+  \end{split}
+\tag{6.10}\]</span></span></p>
+<p>Restricting ourselves to the first <span class="math inline">\(m+1\)</span> modes we see only the left hand side contributes.</p>
+<p>We can write this result as a matrix equation. Define the state vector</p>
+<p><span id="eq-fe4-dg_state_vector"><span class="math display">\[
+  \symbf{\hat{\Psi}} = (\hat{\Psi}_0, \dots, \hat{\Psi}_N)^T.
+\tag{6.11}\]</span></span></p>
+<p>For now, restrict to one dimension and set <span class="math inline">\(V = [-1, 1]\)</span>: we can use a coordinate transformation to convert to other domains. Then define the matrices</p>
+<p><span id="eq-fe4-dg_mass_stiffness_matrices"><span class="math display">\[
+\begin{aligned}
+  \hat{M}_{ln} &amp;= \int_{-1}^1 \phi_l(x) \phi_n(x), \\
+  \hat{S}_{ln} &amp;= \int_{-1}^1 \phi_l(x) \frac{\partial \phi_n}{\partial x}(x),
+\end{aligned}
+\tag{6.12}\]</span></span></p>
+<p>which can be pre-calculated and stored for repeated use. These are typically referred to (building on finite <em>element</em> work) as the <em>mass</em> matrix (<span class="math inline">\(\hat{M}\)</span>) and the <em>stiffness</em> matrix (<span class="math inline">\(\hat{S}\)</span>). We therefore finally have</p>
+<p><span id="eq-fe4-dg_advection5"><span class="math display">\[
+  \hat{M} \frac{\partial \symbf{\hat{\Psi}}}{\partial t} + \hat{S}^T \left( u \symbf{\hat{\Psi}} \right) =
+  -\left[ \symbf{\phi} F \right]_{-1}^1.
+\tag{6.13}\]</span></span></p>
+<p>The right hand side term is the <em>boundary flux</em> and requires coupling to neighbouring cells, or boundary conditions. It requires evaluating a product of basis functions <span class="math inline">\(\phi_l(x) \phi_n(x)\)</span> at the boundary of the domain.</p>
+<p>We see that, once we have evaluated the mass and stiffness matrices, we can then update <em>all</em> modes <span class="math inline">\(\symbf{\hat{\Psi}}\)</span> by evaluating the boundary flux term on the right hand side and solving a linear system. This illustrates the small stencil of discontinuous Galerkin schemes: the only coupling to the other cells is through that boundary integral, which only couples to direct neighbours. However, if the flux terms couple different modes (as evaluating them requires evaluating a product of basis functions <span class="math inline">\(\phi_l(x) \phi_n(x)\)</span>), then the amount of information communicated may still be large. Therefore the communication cost of the scheme is linked to the properties of the basis functions at the domain boundary.</p>
+<p>We also see that the behaviour of the scheme will crucially depend on the mass matrix <span class="math inline">\(\hat{M}\)</span>. If it is singular the scheme cannot work. If it is poorly conditioned then the scheme will rapidly lose accuracy. Crucially, with the monomial basis of (<a href="#eq-fe4-dg_monomial_basis" class="quarto-xref">Equation&nbsp;<span>6.3</span></a>), the condition number of the mass matrix grows very rapidly, and the scheme loses accuracy for moderate <span class="math inline">\(m\)</span>.</p>
+<p>The choice of whether to prioritize the behaviour of the mass matrix or the flux terms leads to two different schemes.</p>
+</section>
+<section id="sec-dg_modal" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="sec-dg_modal"><span class="header-section-number">6.2</span> Modal Discontinuous Galerkin</h2>
+<p>If we prioritize the behaviour of the mass matrix as the most important starting point for our scheme we are led to the <em>modal</em> Discontinuous Galerkin approach. We noted above that the choice of a monomial basis led to a poorly conditioned mass matrix. Instead, it is sensible to pick as a function basis something from the class of <em>orthogonal polynomials</em>, where</p>
+<p><span id="eq-fe4-dg_orthog_polys"><span class="math display">\[
+  \int_V w(x) \phi_l(x) \phi_n(x) \propto \delta_{ln}.
+\tag{6.14}\]</span></span></p>
+<p>The Kronecker delta <span class="math inline">\(\delta_{ln}\)</span> ensures that the mass matrix is diagonal, and hence always easy to invert. When the <em>weight function</em> <span class="math inline">\(w(x)\)</span> is identically <span class="math inline">\(1\)</span>, as needed for the mass matrix in (<a href="#eq-fe4-dg_mass_stiffness_matrices" class="quarto-xref">Equation&nbsp;<span>6.12</span></a>), this suggests we should use the <em>Legendre polynomials</em> <span class="math inline">\(\phi_n(x) = P_n(x)\)</span>, which obey</p>
+<p><span id="eq-fe4-dg_legendre_poly"><span class="math display">\[
+  \int_{-1}^1 P_l(x) P_n(x) = \frac{2}{2 n + 1} \delta_{ln}.
+\tag{6.15}\]</span></span></p>
+<p>A further simplification comes from choosing the normalized Legendre polynomials</p>
+<p><span id="eq-fe4-dg_legendre_poly_norm"><span class="math display">\[
+  \tilde{P}_n(x) = \sqrt{\frac{2 n + 1}{2}} P_n(x)
+\tag{6.16}\]</span></span></p>
+<p>which ensures that the mass matrix <span class="math inline">\(\hat{M}\)</span> is the identity matrix.</p>
+<p>Now that we have fixed a choice of basis functions we can evaluate the mass matrix (which will be the identity here) and the stiffness matrix <span class="math inline">\(\hat{S}\)</span>. We still need to evaluate the boundary flux. If we explicitly write out equation (<a href="#eq-fe4-dg_advection5" class="quarto-xref">Equation&nbsp;<span>6.13</span></a>) in index form (using Einstein summation convention over <span class="math inline">\(n\)</span>) we have</p>
+<p><span id="eq-fe4-dg_advection6"><span class="math display">\[
+  \hat{M}_{ln} \frac{\partial \hat{\Psi}_n}{\partial t} + \hat{S}^T_{ln} u \hat{\Psi}_n = -\left[ u P_l(x) P_n(x) \hat{\Psi}_n \right]_{-1}^1.
+\tag{6.17}\]</span></span></p>
+<p>We can now directly use that <span class="math inline">\(P_n(1) = 1\)</span> and <span class="math inline">\(P_n(-1) = (-1)^n\)</span> to get the boundary flux term as</p>
+<p><span id="eq-fe4-dg_boundary_flux_modal"><span class="math display">\[
+  -\left[ u P_l(x) P_n(x) \hat{\Psi}_n \right]_{-1}^1 = u \left\{ (-1)^{l+n} \Psi_n(-1) - \Psi_n(1) \right\}.
+\tag{6.18}\]</span></span></p>
+<p>Here <span class="math inline">\(\Psi_n(1)\)</span>, for example, is the <span class="math inline">\(n^{\text{th}}\)</span> mode of the solution at the boundary. As there are two solutions at the boundary of the element - the solution at <span class="math inline">\(x = 1_{-}\)</span> from the interior of the element, and the solution at <span class="math inline">\(x = 1_{+}\)</span> from the exterior (either another element, or from the boundary conditions), we need a Riemann solver to give us a single solution at <span class="math inline">\(x=1\)</span>. In the case of linear advection, as here, we can use the upwind solver for the modes as well as for the solution, so</p>
+<p><span id="eq-fe4-dg_riemann_solver"><span class="math display">\[
+  \Psi_n(x; \Psi^{-}_n, \Psi^{+}_n) = \begin{cases}
+    \Psi^{-}_n &amp; \text{if } u \ge 0 \\ \Psi^{+}_n &amp; \text{otherwise.}
+\end{cases}
+\tag{6.19}\]</span></span></p>
+<p>Two points should be immediately noted about this discontinuous Galerkin method. First, if we restrict to only one mode (<span class="math inline">\(N=0\)</span>), then the only basis function we have is <span class="math inline">\(\tilde{P}_0(x) = 1 / \sqrt{2}\)</span>, the mass matrix <span class="math inline">\(\hat{M} = 1\)</span>, the stiffness matrix vanishes, and the boundary flux term reduces to the standard finite volume update. In general, the zero mode corresponds to the integral average over the cell or element.</p>
+<p>Second, we note that the boundary flux term always couples different modes (when including more than just one), and only in the linear case will it be simple to give a flux formula that works for all modes. As the boundary flux term is crucial in many cases, we need to change approach to simplify the calculation of this term using (possibly approximate) solutions to the Riemann problem.</p>
+</section>
+<section id="sec-dg_nodal" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="sec-dg_nodal"><span class="header-section-number">6.3</span> Nodal Discontinuous Galerkin</h2>
+<p>A problem with the modal form used above is with the boundary flux term. The solution (for nonlinear equations) of the flux for higher order modes is complex. The mode coupling at the boundary also means the amount of information communicated could be large, meaning the scheme is not as efficient as it could be. Instead we note that in standard finite volume schemes we need the value of the function either side of the interface. This suggests that, rather than using a modal expansion as above, we should use a <em>nodal</em> expansion where the values of the functions are known at particular points. If two of those points are at the boundaries of the cell then those values can be used to compute the flux.</p>
+<p>Let us denote these nodal locations by <span class="math inline">\(\xi_i\)</span>, and the values of the solution at these locations by <span class="math inline">\(\Psi_i\)</span>. We therefore have our solution in the form</p>
+<p><span id="eq-fe4-dg_nodal_interp"><span class="math display">\[
+  \Psi(t, x) = \sum_{i=0}^m \Psi_i(t) \ell_i(x)
+\tag{6.20}\]</span></span></p>
+<p>where the <span class="math inline">\(\ell_i(x)\)</span> are the standard indicator interpolating polynomials that obey</p>
+<p><span id="eq-fe4-dg_nodal_interp_indicator"><span class="math display">\[
+  \ell_i(\xi_j) = \delta_{ij}.
+\tag{6.21}\]</span></span></p>
+<p>This directly matches the <em>modal</em> form of the solution from (<a href="#eq-fe4-dg_fn_basis_split" class="quarto-xref">Equation&nbsp;<span>6.5</span></a>),</p>
+<p><span id="eq-fe4-dg_modal_interp_1"><span class="math display">\[
+  \Psi(t, x) = \sum_n \hat{\Psi}_n(t) \phi_n(x),
+\tag{6.22}\]</span></span></p>
+<p>with the basis functions <span class="math inline">\(\phi_n\)</span> being the indicator polynomials <span class="math inline">\(\ell_n\)</span>. We immediately see that the boundary flux term will simplify hugely, as the only term that is non-zero at <span class="math inline">\(x=-1\)</span> comes from the product of <span class="math inline">\(\ell_0(-1) \ell_0(-1)\)</span>, using the convention that <span class="math inline">\(\xi_0 = -1\)</span>, as <span class="math inline">\(\ell_n(-1) = 0\)</span> for <span class="math inline">\(n \ne 0\)</span>. Similarly the only term that is non-zero at <span class="math inline">\(x=+1\)</span> comes from the product of <span class="math inline">\(\ell_m(-1) \ell_m(-1)\)</span>. Therefore, for any number of modes <span class="math inline">\(m\)</span>, we only need to communicate one piece of information from the neighbouring element in order to solve the Riemann problem, and this is the value of the solution at that interface.</p>
+<p>However, by choosing as a basis the indicator polynomials <span class="math inline">\(\ell_n(x)\)</span>, the resulting mass matrix will not be the identity, as the indicator polynomials are not orthogonal. The properties of the mass matrix will now crucially depend on how we choose the locations of the nodes, <span class="math inline">\(\xi_i\)</span>. This is most easily done by linking the nodal form of (<a href="#eq-fe4-dg_nodal_interp" class="quarto-xref">Equation&nbsp;<span>6.20</span></a>) to the modal form (<a href="#eq-fe4-dg_fn_basis_split" class="quarto-xref">Equation&nbsp;<span>6.5</span></a>), where here we are thinking of <span class="math inline">\(\phi_n\)</span> as being a different basis (<span class="math inline">\(\phi_n \ne \ell_n\)</span>) which is known to be well behaved. This implicitly allows us to restrict <span class="math inline">\(\xi_j\)</span>.</p>
+<p>By evaluating both forms at a node <span class="math inline">\(\xi_j\)</span> we get</p>
+<p><span id="eq-fe4-dg_nodal_vandermonde1"><span class="math display">\[
+  \Psi_j = \sum_n \phi_n(\xi_j) \hat{\Psi}_n.
+\tag{6.23}\]</span></span></p>
+<p>By defining a (generalized) <em>Vandermonde</em> matrix <span class="math inline">\(\hat{V}\)</span> as</p>
+<p><span id="eq-fe4-dg_nodal_vandermonde2"><span class="math display">\[
+  \hat{V}_{jn} = \phi_n(\xi_j)
+\tag{6.24}\]</span></span></p>
+<p>we see that we can translate from the modal state vector <span class="math inline">\(\symbf{\hat{\Psi}} = (\hat{\Psi}_0, \dots, \hat{\Psi}_N)^T\)</span> to the nodal state vector <span class="math inline">\(\symbf{\Psi} = (\Psi_0, \dots, \Psi_N)^T\)</span> via the matrix equation</p>
+<p><span id="eq-fe4-dg_nodal_vandermonde3"><span class="math display">\[
+  \hat{V} \symbf{\hat{\Psi}} = \symbf{\Psi}.
+\tag{6.25}\]</span></span></p>
+<p>We can also connect the basis functions <span class="math inline">\(\phi_n\)</span> to the interpolating polynomials <span class="math inline">\(\ell_i\)</span> via the Vandermonde matrix. Note that</p>
+<p><span id="eq-fe4-dg_nodal_vandermonde4"><span class="math display">\[
+\begin{aligned}
+      &amp;&amp; \Psi(t, x) &amp;= \sum_n \hat{\Psi}_n \phi_n(x) \\
+      &amp;&amp; &amp;= \sum_i \Psi_i \ell_i(x) \\
+      &amp;&amp; &amp;= \sum_i \sum_n \hat{V}_{in} \hat{\Psi}_n \ell_i(x) \\
+      &amp;&amp; &amp;= \sum_n \sum_i \hat{V}_{in} \hat{\Psi}_n \ell_i(x) \\
+      \implies &amp;&amp; 0 &amp;= \sum_n \hat{\Psi}_n \left( \sum_i \left[ \hat{V}_{in} \ell_i(x) - \phi_n(x) \right] \right).
+\end{aligned}
+\tag{6.26}\]</span></span></p>
+<p>This immediately gives</p>
+<p><span id="eq-fe4-dg_nodal_vandermonde5"><span class="math display">\[
+  \hat{V}_{in} \ell_i(x) = \phi_n(x)
+\tag{6.27}\]</span></span></p>
+<p>or, by thinking of the basis functions and interpolating polynomials as vectors,</p>
+<p><span id="eq-fe4-dg_nodal_vandermonde6"><span class="math display">\[
+  \hat{V}^T \symbf{\ell}(x) = \symbf{\phi}(x).
+\tag{6.28}\]</span></span></p>
+<p>This allows us to convert the modal approach to deriving a scheme to a nodal approach directly through the Vandermonde matrix.</p>
+<p>To construct the nodal scheme we need to fix the location of the nodal points. We have constructed the modal scheme to be well conditioned by looking at the mass matrix. This suggests that to make the nodal scheme well behaved we should ensure good conditioning of the Vandermonde matrix. This requires carefully choosing the nodes <span class="math inline">\(\xi_i\)</span>. We also want to ensure that two of the nodes are at <span class="math inline">\(x = \pm 1\)</span>, and that the accuracy of the scheme is as good as possible. All these conditions combine to suggest that the nodes <span class="math inline">\(\xi_i\)</span> should be given by the points, which are the zeros of <span class="math inline">\(P_N'(x)\)</span> combined with <span class="math inline">\(\pm 1\)</span>.</p>
+<div id="cell-fig-fe4-dg-grid" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div id="fig-fe4-dg-grid" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fe4-dg-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="finite_elements_4_files/figure-html/fig-fe4-dg-grid-output-1.png" width="621" height="434" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fe4-dg-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.1: The grid for a Discontinuous Galerkin method is split into cells or elements as indicated by the vertical dashed lines – here there are only <span class="math inline">\(4\)</span> cells. Within each cell the solution is represented by an <span class="math inline">\(m^{  ext{th}}\)</span> order polynoial, as shown by the dashed lines. This representation is central to the modal DG method. Equivalent information can be stored at specific nodes, as shown by the markers. Note how the number and location of the nodes varies with <span class="math inline">\(m\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Figure (<a href="#fig-fe4-dg-grid" class="quarto-xref">Figure&nbsp;<span>6.1</span></a>) shows the nodes and modes for a sine wave represented by a Discontinuous Galerkin method on a grid with only <span class="math inline">\(4\)</span> cells. We see how rapidly the representation appears to converge to the smooth sine wave with increasing <span class="math inline">\(m\)</span>. Note also how the locations of the nodes varies with <span class="math inline">\(m\)</span>, as the optimal nodes changes with the order of the method. However, in all cases there are nodes at the boundaries of each cell.</p>
+<div id="exr-fe4-vandermode" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 6.1</strong></span> Construct the Vandermonde matrix converting modal coefficients, based on orthonormal Legendre polynomials, to nodal coefficients, based on Gauss-Lobatto nodal points, on the interval <span class="math inline">\(x \in [-1, 1]\)</span>. For example, for <span class="math inline">\(m=2\)</span> the result is, to <span class="math inline">\(4\)</span> significant figures,</p>
+<p><span id="eq-fe4-exr_vandermonde"><span class="math display">\[
+  V = \begin{pmatrix}
+        0.7071 &amp; -1.225 &amp; 1.581 \\
+        0.7071 &amp; 0 &amp; -0.7906 \\
+        0.7071 &amp; 1.225 &amp; 1.581
+      \end{pmatrix}.
+\tag{6.29}\]</span></span></p>
+<p>Using the Vandermonde matrix and its inverse, check that you can convert from nodes to modes and vice versa. Check that the condition number grows slowly with <span class="math inline">\(m\)</span> (roughly as <span class="math inline">\(m^{1/2}\)</span> for large <span class="math inline">\(m\)</span>).</p>
+</div>
+<p>With these restrictions, we can now construct the nodal scheme. As noted above, this scheme remains a modal scheme as generally introduced in (<a href="#sec-dg_basis" class="quarto-xref"><span>Section 6.1</span></a>), but the basis functions are the indicator polynomials <span class="math inline">\(\ell_n(x)\)</span>. Thus the scheme can be written in the mass matrix form as in (<a href="#eq-fe4-dg_advection5" class="quarto-xref">Equation&nbsp;<span>6.13</span></a>) of</p>
+<p><span id="eq-fe4-nodal_mass_form"><span class="math display">\[
+  \hat{M} \frac{\partial \symbf{\hat{\Psi}}}{\partial t} + \hat{S}^T u \symbf{\hat{\Psi}} = -\left[ \symbf{\phi F} \right]_{-1}^1,
+\tag{6.30}\]</span></span></p>
+<p>but now the two matrices are given by</p>
+<p><span id="eq-fe4-dg_nodal_mass__stiffness_matrices"><span class="math display">\[
+\begin{aligned}
+  \hat{M}_{ln} &amp;= \int_{-1}^1 \ell_l(x) \ell_n(x), \\
+  \hat{S}_{ln} &amp;= \int_{-1}^1 \ell_l(x) \frac{\partial \ell_n}{\partial x}(x).
+\end{aligned}
+\tag{6.31}\]</span></span></p>
+<p>By using the Vandermonde matrix to link the nodal basis to an orthogonal basis such as the Legendre polynomials we can simplify the mass matrix to</p>
+<p><span id="eq-fe4-dg_nodal_mass_matrix_from_V"><span class="math display">\[
+  \hat{M} = \left( \hat{V} \hat{V}^T \right)^{-1}.
+\tag{6.32}\]</span></span></p>
+<p>The stiffness matrix can also be simplified, by re-writing <span class="math inline">\(\frac{\partial \ell_n}{\partial x}(x)\)</span> as an expansion in terms of <span class="math inline">\(\ell_n(x)\)</span>. Defining the <em>differentiation matrix</em> <span class="math inline">\(\hat{D}\)</span> as</p>
+<p><span id="eq-fe4-dg_nodal_differentiation"><span class="math display">\[
+  \hat{D}_{ln} = \left. \frac{\partial \ell_n}{\partial x}(x) \right|_{x = \xi_l}
+\tag{6.33}\]</span></span></p>
+<p>we have <span class="math inline">\(\frac{\partial \ell_n}{\partial x}(x) = \sum_k \hat{D}_{kn} \ell_k(x)\)</span></p>
+<p><span id="eq-fe4-dg_nodal_stiffness_matrix_from_D_steps"><span class="math display">\[
+\begin{aligned}
+    \hat{S}_{ln} &amp;= \int_{-1}^1 \ell_l(x) \frac{\partial \ell_n}{\partial x}(x) \\
+    &amp;= \int_{-1}^1 \ell_l(x) \sum_k \hat{D}_{kn} \ell_k(x) \\
+    &amp;= \sum_k \left( \ell_l(x) \ell_k(x) \right) \hat{D}_{kn} \\
+    &amp;= \hat{M}_{lk} \hat{D}_kn.
+\end{aligned}
+\tag{6.34}\]</span></span></p>
+<p>This shows that the stiffness matrix simplifies to</p>
+<p><span id="eq-fe4-dg_nodal_stiffness_matrix_from_V"><span class="math display">\[
+  \hat{S} = \hat{M} \hat{D}.
+\tag{6.35}\]</span></span></p>
+<p>Finally, using similar methods to the steps above, we can link the differentiation matrix back to the Vandermonde matrix, via</p>
+<p><span id="eq-fe4-dg_nodal_D_matrix_from_V"><span class="math display">\[
+  \hat{D} = \left( \frac{\partial V}{\partial x} \right) \hat{V}^{-1}.
+\tag{6.36}\]</span></span></p>
+<p>This is primarily useful when the modal function basis is a standard library function such as the (normalized) Legendre polynomials. This means that the basis functions and their derivatives, and hence the Vandermonde matrix and its derivatives, can be written solely in terms of library functions. For example, in Python the package contains (in ) the functions (which evaluates the Legendre polynomials), (which links the derivatives of the Legendre polynomials back to the Legendre polynomials themselves), and (which evaluates the Vandermonde matrix directly, but in un-normalized form).</p>
+<p>There is one final step needed to construct the full scheme. So far, the method has been built assuming a single element with the coordinates <span class="math inline">\(x \in [-1, 1]\)</span>. For most cases we will want to use a “small” number of modes, say <span class="math inline">\(m \le 5\)</span>, and split the domain into <span class="math inline">\(N\)</span> elements, like the cells in a finite volume scheme. If we assume a general element has coordinates <span class="math inline">\(x \in [x_{j-1/2}, x_{j+1/2}]\)</span> with width <span class="math inline">\(\Delta x\)</span>, then the <em>form</em> of the scheme remains the same:</p>
+<p><span id="eq-fe4-dg_nodal_final"><span class="math display">\[
+  M \frac{\partial \symbf{\hat{\Psi}}}{\partial t} + S^T u \symbf{\hat{\Psi}} = -\left[ \symbf{\phi} F \right]_{x_{j-1/2}}^{x_{j+1/2}}.
+\tag{6.37}\]</span></span></p>
+<p>However, the change of coordinates needs to be factored in. We can see how this works by looking at the integral definitions, such as (<a href="#eq-fe4-dg_nodal_mass__stiffness_matrices" class="quarto-xref">Equation&nbsp;<span>6.31</span></a>). We see that the mass matrix transforms as</p>
+<p><span id="eq-fe4-dg_nodal_mass_matrix_with_h"><span class="math display">\[
+  M = \frac{\Delta x}{2} \hat{M},
+\tag{6.38}\]</span></span></p>
+<p>but that the stiffness matrix is unchanged.</p>
+<div id="exr-fe4-matrices1" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 6.2</strong></span> From the Vandermonde matrices constructed above, build the mass, differentiation and stiffness matrices <span class="math inline">\(\hat{M}, \hat{D}, \hat{S}\)</span>, on the interval <span class="math inline">\(x \in [-1, 1]\)</span>. For example, for <span class="math inline">\(m=2\)</span> the results are, to <span class="math inline">\(4\)</span> significant figures,</p>
+<p><span id="eq-fe4-exr_matrices"><span class="math display">\[
+\begin{aligned}
+  \hat{M} &amp;= \begin{pmatrix}
+        0.2667 &amp; 0.1333 &amp; -0.0667 \\
+        0.1333 &amp; 1.067 &amp; 0.1333 \\
+        -0.06667 &amp; 0.1333 &amp; 0.2667
+      \end{pmatrix}, \\
+  \hat{D} &amp;= \begin{pmatrix}
+        -1.5 &amp; 2 &amp; -0.5 \\
+        -0.5 &amp; 0 &amp; 0.5 \\
+        0.5 &amp; -2 &amp; 1.5
+      \end{pmatrix}, \\
+  \hat{S} &amp;= \begin{pmatrix}
+        -0.5 &amp; 0.6667 &amp; -1.667 \\
+        -0.6667 &amp; 0 &amp; 0.6667 \\
+        1.667 &amp; -0.6667 &amp; 0.5
+      \end{pmatrix}.
+\end{aligned}
+\tag{6.39}\]</span></span></p>
+</div>
+<div id="cell-fig-fe4-dg-sin" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display">
+<div id="fig-fe4-dg-sin" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fe4-dg-sin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="finite_elements_4_files/figure-html/fig-fe4-dg-sin-output-1.png" width="661" height="468" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fe4-dg-sin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.2: A Discontinuous Galerkin method with <span class="math inline">\(m=3\)</span> and <span class="math inline">\(16\)</span> elements applied to the advection equation, where a sine wave is advected once around the domain. Even at this low resolution the result is visually exact. The solutions are plotted at the nodal values, which are not evenly spaced.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-fig-fe4-dg-hat" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div id="fig-fe4-dg-hat" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fe4-dg-hat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="finite_elements_4_files/figure-html/fig-fe4-dg-hat-output-1.png" width="661" height="468" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fe4-dg-hat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.3: A Discontinuous Galerkin method with <span class="math inline">\(m=3\)</span> and <span class="math inline">\(16\)</span> elements applied to the advection equation, where a discontinuous top hat function is advected once around the domain. The expected Gibbs oscillations are seen.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>By combining the nodal DG update described above with a time integrator we can look at the performance of the scheme. We need to take care in choosing the timestep. From the nodal point of view we can see that the width of the cell, <span class="math inline">\(\Delta x\)</span>, is not going to be the limiting factor. Instead, the smallest distance between the (unequally spaced!) nodes is going to be crucial. General results (see e.g. <span class="citation" data-cites="hesthaven2017numerical">(<a href="references.html#ref-hesthaven2017numerical" role="doc-biblioref">Hesthaven 2017</a>)</span>) suggest that reducing the timestep by a factor of <span class="math inline">\(2 m + 1\)</span> is sufficient to ensure stability, but it does increase computational cost.</p>
+<p>Figures (<a href="#fig-fe4-dg-sin" class="quarto-xref">Figure&nbsp;<span>6.2</span></a>) and (<a href="#fig-fe4-dg-hat" class="quarto-xref">Figure&nbsp;<span>6.3</span></a>) show the advection of two initial profiles one period around a periodic domain. In (<a href="#fig-fe4-dg-sin" class="quarto-xref">Figure&nbsp;<span>6.2</span></a>) we see the excellent performance when applied to a smooth profile. The method is essentially indistinguishable from the exact solution. However, in (<a href="#fig-fe4-dg-hat" class="quarto-xref">Figure&nbsp;<span>6.3</span></a>), we see that when the method is applied to a discontinuous initial profile then Gibbs oscillations result. The only “nice” feature of the Discontinuous Galerkin method here is that these oscillations are confined to the elements next to the discontinuities, and do not spread to cover the entire grid.</p>
+<p>As with finite difference schemes, there are a range of modifications that can be made to limit or eliminate these oscillations. In Discontinuous Galerkin methods it is typical to do this in two steps: first, identify which elements need limiting, and second, modify the data in the required cells. The identification step can be done using the nodal values: construct limited slopes from cell average values and compare the predicted values at cell boundaries to the nodal values actually stored. The modification step can be done in many ways. A number are outlined in <span class="citation" data-cites="hesthaven2017numerical">(<a href="references.html#ref-hesthaven2017numerical" role="doc-biblioref">Hesthaven 2017</a>)</span>.</p>
+<div id="cell-fig-fe4-dg-convergence" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display">
+<div id="fig-fe4-dg-convergence" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fe4-dg-convergence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="finite_elements_4_files/figure-html/fig-fe4-dg-convergence-output-1.png" width="784" height="467" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fe4-dg-convergence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.4: The convergence rate of the DG method applied to a sine wave. An explicit SSP third order Runge-Kutta time integrator is used. The expected convergence rate (<span class="math inline">\(m+1\)</span>) is seen until the limits of the time integrator are reached.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>With smooth solutions we can check the convergence rate of the method. In (<a href="#fig-fe4-dg-convergence" class="quarto-xref">Figure&nbsp;<span>6.4</span></a>) the smooth sine profile is again advected once around a periodic domain, using mode numbers <span class="math inline">\(m = 1, \dots, 4\)</span>, and checking convergence with the number of elements. This using a third order Runge Kutta method in time, and eventually the time integration error dominates over the spatial error.</p>
+<div id="cell-fig-fe4-dg-convergence-rk8" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/ih3/anaconda3/envs/mfc/lib/python3.12/site-packages/scipy/integrate/_ode.py:431: UserWarning: dop853: step size becomes too small
+  self._y, self.t = mth(self.f, self.jac or (lambda: None),</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div id="fig-fe4-dg-convergence-rk8" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fe4-dg-convergence-rk8-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="finite_elements_4_files/figure-html/fig-fe4-dg-convergence-rk8-output-2.png" width="784" height="467" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fe4-dg-convergence-rk8-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.5: The convergence rate of the DG method applied to a sine wave. An eighth order Runge-Kutta time integrator is used. The expected convergence rate (<span class="math inline">\(m+1\)</span>) is seen even at high orders.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In (<a href="#fig-fe4-dg-convergence-rk8" class="quarto-xref">Figure&nbsp;<span>6.5</span></a>) an <span class="math inline">\(8^{\text{th}}\)</span> order time integrator is used. This reduces the time integrator error far below what is needed, and we now see that every scheme converges at the expected rate. In more complex systems in multiple dimensions the error from the spatial terms will be much larger, and so lower order methods can be used without compromising the accuracy.</p>
+<div id="exr-fe4-dg-full" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 6.3</strong></span> Write a Python code to advect a profile around <span class="math inline">\(x \in [0, 1]\)</span> using the Discontinuous Galerkin method. A variety of Python packages can be used to facilitate this: <code>numpy</code> will solve linear systems and construct the matrices linked to Legendre polynomials, <code>scipy.integrate</code> will solve the ODE in time, and <code>quadpy</code> will construct the Gauss-Lobatto integration points.</p>
+<p>Check that the solution converges as expected.</p>
+</div>
+</section>
+<section id="discussion" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="discussion"><span class="header-section-number">6.4</span> Discussion</h2>
+<p>In some ways Discontinuous Galerkin type methods seem a half-way-house between spectral methods and finite difference or finite volume methods. In principle the number of modes used within each element can be increased arbitrarily, giving the extremely rapid convergence of a spectral method. However, each element is linked to its neighbour, so there is still the communication with neighbouring points as in, for example, finite difference methods.</p>
+<p>The key advantage of Discontinuous Galerkin methods comes with the latest computing hardware. These “Exascale” High Performance machines will rely on codes using very large numbers of relatively cheap, energy efficient individual computing cores (nearly always GPUs). This means the calculation must be performed in parallel across millions (or more) different compute cores. In this situation the limiting factor will be the communication with neighbouring points. This makes pure spectral methods totally impractical, and high accuracy finite difference methods (that have to communicate with many neighbours) will also not reach the performance expectations. As Discontinuous Galerkin methods only have to compute with <em>one</em> neighbouring element on each side, they minimise communication whilst giving high accuracy.</p>
+<p>However, the stiffness and mass matrices involved in the update grow rapidly with the number of spatial dimensions and with the size of the system to solve. In addition, simple Discontinuous Galerkin methods struggle with steep gradients and discontinuities. The complexity and cost of making these methods practical means that they are - as yet - rarely used. Future computing hardware considerations may make them increasingly important.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-hesthaven2017numerical" class="csl-entry" role="listitem">
+Hesthaven, Jan S. 2017. <em>Numerical Methods for Conservation Laws: From Analysis to Algorithms</em>. SIAM.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./finite_elements_3.html" class="pagination-link" aria-label="Time evolution">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Time evolution</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
