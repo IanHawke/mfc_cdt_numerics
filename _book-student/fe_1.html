@@ -533,7 +533,7 @@ S(x) = \sum_a S_a N_a(x),
 \tag{3.21}\]</span></span></p>
 <p>giving <span class="math inline">\(S_a = S(x(\xi_a))\)</span>. We can then compute, for the simple shape functions we use here,</p>
 <p><span id="eq-fe1-element_7"><span class="math display">\[
-f^e_a = \frac{x_{A+1}-x_{A}}{6} \begin{pmatrix} 2 f_1 + f_2 \\ f_1 + 2 f_2 \end{pmatrix} \, .
+f^e_a = \frac{x_{A+1}-x_{A}}{6} \begin{pmatrix} 2 S_1 + S_2 \\ S_1 + 2 S_2 \end{pmatrix} \, .
 \tag{3.22}\]</span></span></p>
 <p>Finally, we need to include the boundary condition terms in the force vector. To include the Neumann boundary condition at the right boundary we adjust the final entry,</p>
 <p><span id="eq-fe1-element_8"><span class="math display">\[
@@ -550,7 +550,7 @@ F_0 \to F_0 - \alpha k^0_{12}.
 <p>Our goal is to construct a linear (matrix) equation to give us the solution <span class="math inline">\(\psi_A\)</span> at all nodes <span class="math inline">\(A\)</span> where it isn’t enforced by the boundary conditions (which, in the example so far, is all nodes except the left-hand boundary). We note that each <em>interior</em> node is linked to two elements, so contributions from the element matrix will affect more than one equation.</p>
 <p>To keep track of this, we construct the <em>location matrix</em> or <em>location array</em> <span class="math inline">\(LM\)</span> which, given the node number <span class="math inline">\(a \in \{1, 2\}\)</span> and the element number <span class="math inline">\(e\)</span> returns the associated equation number.</p>
 <p>Any node that is not to be included (as its value is given by a Dirichlet boundary condition) has its associated equation number <span class="math inline">\(A\)</span> set to <span class="math inline">\(-1\)</span>. The first node that must be included is given value <span class="math inline">\(0\)</span>. We then go element-by-element: the left-hand node of element <span class="math inline">\(e\)</span> is the same as the right-hand node of element <span class="math inline">\(e-1\)</span>, so picks up the same equation number. The right-hand node of element <span class="math inline">\(e\)</span>, if considered, then has equation number one higher than the left-hand node of that element. This translates directly into Python code:</p>
-<div id="08e9bf44" class="cell" data-execution_count="5">
+<div id="e2e87e34" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>N_elements <span class="op">=</span> <span class="dv">4</span> <span class="co"># for example</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>LM <span class="op">=</span> np.zeros((<span class="dv">2</span>, N_elements), dtype<span class="op">=</span>np.int64)</span>

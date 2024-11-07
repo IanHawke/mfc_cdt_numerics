@@ -398,7 +398,7 @@ Figure&nbsp;4.1: The square domain split into triangular elements. Red dots are 
 <li>Providing the (integer) <em>element node array</em> <code>IEN</code> which says how the elements are linked to the nodes.</li>
 </ol>
 <p>We have that for element <span class="math inline">\(e\)</span> and <em>local</em> node number <span class="math inline">\(a = 0, 1, 2\)</span> the global node number is <span class="math inline">\(A = IEN(e, a)\)</span>. This notation is sufficiently conventional that <code>matplotlib</code> recognizes it with its <code>triplot</code>/<code>tripcolor</code>/<code>trisurf</code> functions. In this case we have</p>
-<div id="1b175f79" class="cell" data-execution_count="3">
+<div id="651e345b" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IEN <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>], </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                [<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -410,11 +410,11 @@ Figure&nbsp;4.1: The square domain split into triangular elements. Red dots are 
 <li>the <em>local</em> element numbers in the blue boxes (the subscript shows the element number).</li>
 </ul>
 <p>We will need one final array, which is the <span class="math inline">\(ID\)</span> or (integer) <em>destination</em> array. This links the <em>global</em> node number to the <em>global</em> equation number in the final linear system. As the order of the equations in a linear system doesn’t matter, this essentially encodes whether a node should have any equation in the linear system. Any node on <span class="math inline">\(\Gamma_D\)</span>, where the value of the temperature is given, should not have an equation. In the example above the left edge is fixed, so nodes <code>0</code> and <code>2</code> lie on <span class="math inline">\(\Gamma_D\)</span> and should not have an equation. Thus in our case we have</p>
-<div id="3ebea28b" class="cell" data-execution_count="4">
+<div id="84fa2a25" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ID <span class="op">=</span> np.array([<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In the one dimensional case we used the <em>location matrix</em> or <span class="math inline">\(LM\)</span> array to link local node numbers in elements to equations. With the <span class="math inline">\(IED\)</span> and <span class="math inline">\(ID\)</span> arrays the <span class="math inline">\(LM\)</span> matrix is strictly redundant, as <span class="math inline">\(LM(a, e) = ID(IEN(e, a))\)</span>. However, it’s still standard to construct it:</p>
-<div id="d99b6a6f" class="cell" data-execution_count="5">
+<div id="2bfd48c1" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>LM <span class="op">=</span> np.zeros_like(IEN.T)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> e <span class="kw">in</span> <span class="bu">range</span>(IEN.shape[<span class="dv">0</span>]):</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> a <span class="kw">in</span> <span class="bu">range</span>(IEN.shape[<span class="dv">1</span>]):</span>
@@ -456,13 +456,13 @@ Figure&nbsp;4.2: The standard reference triangle.
 <p>As soon as we have the shape functions, our weak form becomes</p>
 <p><span id="eq-fe2-weak_shape1"><span class="math display">\[
 \begin{split}
-  \sum_A T_A \int_{\Omega} \text{d}\Omega \, \left( \partial_{x} N_A (x, y) \partial_{x} N_B(x, y) + \partial_{y} N_A(x, y) \partial_{y} N_B(x, y) \right) = \\ \int_{\Omega} \text{d}\Omega \, N_B(x, y) f(x, y).
+  \sum_A T_A \int_{\Omega} \text{d}\Omega \, \left( \partial_{x} N_A (x, y) \partial_{x} N_B(x, y) + \partial_{y} N_A(x, y) \partial_{y} N_B(x, y) \right) = \\ \int_{\Omega} \text{d}\Omega \, N_B(x, y) S(x, y).
 \end{split}
 \tag{4.8}\]</span></span></p>
 <p>If we restrict to a single element the weak form becomes</p>
 <p><span id="eq-fe2-weak_shape2"><span class="math display">\[
 \begin{split}
-  \sum_A T_A \int_{\triangle} \text{d}\triangle \, \left( \partial_{x} N_A (x, y) \partial_{x} N_B(x, y) + \partial_{y} N_A(x, y) \partial_{y} N_B(x, y) \right) = \\ \int_{\triangle} \text{d}\triangle \, N_B(x, y) f(x, y).
+  \sum_A T_A \int_{\triangle} \text{d}\triangle \, \left( \partial_{x} N_A (x, y) \partial_{x} N_B(x, y) + \partial_{y} N_A(x, y) \partial_{y} N_B(x, y) \right) = \\ \int_{\triangle} \text{d}\triangle \, N_B(x, y) S(x, y).
 \end{split}
 \tag{4.9}\]</span></span></p>
 <p>We need to map the triangle and its <span class="math inline">\((x, y) = \mathbf{x}\)</span> coordinates to the reference triangle and its <span class="math inline">\((\xi_1, \xi_2) = \symbf{\xi}\)</span> coordinates. We also need to work out the integrals that appear in the weak form. We need the transformation formula</p>
@@ -484,15 +484,15 @@ Figure&nbsp;4.2: The standard reference triangle.
 <p>The integral over the reference triangle can be directly approximated using, for example, Gauss quadrature. To second order we have</p>
 <p><span id="eq-fe2-gauss_quad1"><span class="math display">\[
 \begin{split}
-  \int_0^1 \text{d}\xi_2 \, \int_0^{1-\xi_2} \text{d}\xi_1 \, \psi \left( x(\xi_1, \xi_2), y(\xi_1, \xi_2) \right) \simeq \\ \frac{1}{6} \sum_{j = 1}^{3} \psi \left( x((\xi_1)_j, (\xi_2)_j), y((\xi_1)_j, (\xi_2)_j) \right)
+  \int_0^1 \text{d}\xi_2 \, \int_0^{1-\xi_2} \text{d}\xi_1 \, \psi \left( x(\xi_1, \xi_2), y(\xi_1, \xi_2) \right) \simeq \\ \frac{1}{6} \sum_{j = 1}^{3} \psi \left( x(\xi^{(j)}_1, \xi^{(j)}_2), y(\xi^{(j)}_1, \xi^{(j)}_2) \right)
 \end{split}
 \tag{4.14}\]</span></span></p>
 <p>where</p>
 <p><span id="eq-fe2-gauss_quad2"><span class="math display">\[
 \begin{aligned}
-  (\xi_1)_1 &amp;= \frac{1}{6}, &amp; (\xi_2)_1 &amp;= \frac{1}{6}, \\
-  (\xi_1)_2 &amp;= \frac{4}{6}, &amp; (\xi_2)_2 &amp;= \frac{1}{6}, \\
-  (\xi_1)_3 &amp;= \frac{1}{6}, &amp; (\xi_2)_3 &amp;= \frac{4}{6}.
+  \xi^{(1)}_1 &amp;= \frac{1}{6}, &amp; \xi^{(1)}_2 &amp;= \frac{1}{6}, \\
+  \xi^{(2)}_1 &amp;= \frac{4}{6}, &amp; \xi^{(2)}_2 &amp;= \frac{1}{6}, \\
+  \xi^{(3)}_1 &amp;= \frac{1}{6}, &amp; \xi^{(3)}_2 &amp;= \frac{4}{6}.
 \end{aligned}
 \tag{4.15}\]</span></span></p>
 <p>Finally, we need to map from the coordinates <span class="math inline">\(\symbf{\xi}\)</span> to the coordinates <span class="math inline">\(\mathbf{x}\)</span>. This is straightforward if we think of writing each component <span class="math inline">\((x, y)\)</span> in terms of the shape functions. So for element <span class="math inline">\(e\)</span> with node locations <span class="math inline">\((x^e_a, y^e_a)\)</span> for local node number <span class="math inline">\(a = 0, 1, 2\)</span> we have</p>
@@ -534,14 +534,14 @@ Figure&nbsp;4.2: The standard reference triangle.
   k^e_{ab} = \int_{\triangle^e}  \text{d}\triangle^e \, \left( \partial_{x} N_a (x, y) \partial_{x} N_b(x, y) + \partial_{y} N_a(x, y) \partial_{y} N_b(x, y) \right).
 \]</span></li>
 <li>Write a function to compute the coefficients of the force vector for a single element, <span id="eq-fe2-exr11_1"><span class="math display">\[
-  f^e_b = \int_{\triangle^e} \text{d}\triangle^e \, N_b(x, y) f(x, y).
+  f^e_b = \int_{\triangle^e} \text{d}\triangle^e \, N_b(x, y) S(x, y).
 \tag{4.17}\]</span></span></li>
 </ol>
 </section>
 <section id="grid-generation" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="grid-generation"><span class="header-section-number">4.4</span> Grid generation</h2>
 <p>The final, essential, topic that has not been covered is how to generate a grid. Good grid generators or meshers are generally hard (look at, for example, <code>gmesh</code> or <code>dmsh</code> for examples): here is a very simple one for this specific problem.</p>
-<div id="741538aa" class="cell" data-execution_count="7">
+<div id="2e2a1609" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_2d_grid(Nx):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    Nnodes <span class="op">=</span> Nx<span class="op">+</span><span class="dv">1</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, Nnodes)</span>

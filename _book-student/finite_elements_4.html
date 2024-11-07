@@ -542,7 +542,7 @@ Figure&nbsp;6.1: The grid for a Discontinuous Galerkin method is split into cell
     \hat{S}_{ln} &amp;= \int_{-1}^1 \ell_l(x) \frac{\partial \ell_n}{\partial x}(x) \\
     &amp;= \int_{-1}^1 \ell_l(x) \sum_k \hat{D}_{kn} \ell_k(x) \\
     &amp;= \sum_k \left( \ell_l(x) \ell_k(x) \right) \hat{D}_{kn} \\
-    &amp;= \hat{M}_{lk} \hat{D}_kn.
+    &amp;= \hat{M}_{lk} \hat{D}_{kn}.
 \end{aligned}
 \tag{6.34}\]</span></span></p>
 <p>This shows that the stiffness matrix simplifies to</p>
@@ -551,12 +551,12 @@ Figure&nbsp;6.1: The grid for a Discontinuous Galerkin method is split into cell
 \tag{6.35}\]</span></span></p>
 <p>Finally, using similar methods to the steps above, we can link the differentiation matrix back to the Vandermonde matrix, via</p>
 <p><span id="eq-fe4-dg_nodal_D_matrix_from_V"><span class="math display">\[
-  \hat{D} = \left( \frac{\partial V}{\partial x} \right) \hat{V}^{-1}.
+  \hat{D} = \left( \frac{\partial \hat{V}}{\partial x} \right) \hat{V}^{-1}.
 \tag{6.36}\]</span></span></p>
-<p>This is primarily useful when the modal function basis is a standard library function such as the (normalized) Legendre polynomials. This means that the basis functions and their derivatives, and hence the Vandermonde matrix and its derivatives, can be written solely in terms of library functions. For example, in Python the package contains (in ) the functions (which evaluates the Legendre polynomials), (which links the derivatives of the Legendre polynomials back to the Legendre polynomials themselves), and (which evaluates the Vandermonde matrix directly, but in un-normalized form).</p>
+<p>This is primarily useful when the modal function basis is a standard library function such as the (normalized) Legendre polynomials. This means that the basis functions and their derivatives, and hence the Vandermonde matrix and its derivatives, can be written solely in terms of library functions. For example, in Python the <code>numpy</code> package contains (in <code>numpy.polynomial.legendre</code>) the functions <code>legval (which evaluates the Legendre polynomials),</code>legder<code>(which links the derivatives of the Legendre polynomials back to the Legendre polynomials themselves), and</code>legvander` (which evaluates the Vandermonde matrix directly, but in un-normalized form).</p>
 <p>There is one final step needed to construct the full scheme. So far, the method has been built assuming a single element with the coordinates <span class="math inline">\(x \in [-1, 1]\)</span>. For most cases we will want to use a “small” number of modes, say <span class="math inline">\(m \le 5\)</span>, and split the domain into <span class="math inline">\(N\)</span> elements, like the cells in a finite volume scheme. If we assume a general element has coordinates <span class="math inline">\(x \in [x_{j-1/2}, x_{j+1/2}]\)</span> with width <span class="math inline">\(\Delta x\)</span>, then the <em>form</em> of the scheme remains the same:</p>
 <p><span id="eq-fe4-dg_nodal_final"><span class="math display">\[
-  M \frac{\partial \symbf{\hat{\Psi}}}{\partial t} + S^T u \symbf{\hat{\Psi}} = -\left[ \symbf{\phi} F \right]_{x_{j-1/2}}^{x_{j+1/2}}.
+  M \frac{\partial \symbf{\hat{\Psi}}}{\partial t} + S^T u \symbf{\hat{\Psi}} = -\left[ u \symbf{\phi} \right]_{x_{j-1/2}}^{x_{j+1/2}}.
 \tag{6.37}\]</span></span></p>
 <p>However, the change of coordinates needs to be factored in. We can see how this works by looking at the integral definitions, such as (<a href="#eq-fe4-dg_nodal_mass__stiffness_matrices" class="quarto-xref">Equation&nbsp;<span>6.31</span></a>). We see that the mass matrix transforms as</p>
 <p><span id="eq-fe4-dg_nodal_mass_matrix_with_h"><span class="math display">\[
@@ -578,9 +578,9 @@ Figure&nbsp;6.1: The grid for a Discontinuous Galerkin method is split into cell
         0.5 &amp; -2 &amp; 1.5
       \end{pmatrix}, \\
   \hat{S} &amp;= \begin{pmatrix}
-        -0.5 &amp; 0.6667 &amp; -1.667 \\
+        -0.5 &amp; 0.6667 &amp; -0.1667 \\
         -0.6667 &amp; 0 &amp; 0.6667 \\
-        1.667 &amp; -0.6667 &amp; 0.5
+        0.1667 &amp; -0.6667 &amp; 0.5
       \end{pmatrix}.
 \end{aligned}
 \tag{6.39}\]</span></span></p>
@@ -633,7 +633,7 @@ Figure&nbsp;6.4: The convergence rate of the DG method applied to a sine wave. A
 <p>With smooth solutions we can check the convergence rate of the method. In (<a href="#fig-fe4-dg-convergence" class="quarto-xref">Figure&nbsp;<span>6.4</span></a>) the smooth sine profile is again advected once around a periodic domain, using mode numbers <span class="math inline">\(m = 1, \dots, 4\)</span>, and checking convergence with the number of elements. This using a third order Runge Kutta method in time, and eventually the time integration error dominates over the spatial error.</p>
 <div id="cell-fig-fe4-dg-convergence-rk8" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-stderr">
-<pre><code>/Users/ih3/anaconda3/envs/mfc/lib/python3.12/site-packages/scipy/integrate/_ode.py:431: UserWarning: dop853: step size becomes too small
+<pre><code>/Users/ih3/opt/anaconda3/envs/mfc/lib/python3.12/site-packages/scipy/integrate/_ode.py:431: UserWarning: dop853: step size becomes too small
   self._y, self.t = mth(self.f, self.jac or (lambda: None),</code></pre>
 </div>
 <div class="cell-output cell-output-display">
