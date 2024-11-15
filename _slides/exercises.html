@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="_slides/lecture_mol_files/libs/clipboard/clipboard.min.js"></script>
-<script src="_slides/lecture_mol_files/libs/quarto-html/tabby.min.js"></script>
-<script src="_slides/lecture_mol_files/libs/quarto-html/popper.min.js"></script>
-<script src="_slides/lecture_mol_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="_slides/lecture_mol_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="_slides/lecture_mol_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="_slides/lecture_mol_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="_slides/lecture_mol_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="exercises_files/libs/clipboard/clipboard.min.js"></script>
+<script src="exercises_files/libs/quarto-html/tabby.min.js"></script>
+<script src="exercises_files/libs/quarto-html/popper.min.js"></script>
+<script src="exercises_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="exercises_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="exercises_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="exercises_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="exercises_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.551">
 
-  <title>Numerical Methods for MFC CDT (part 2)</title>
+  <title>Exercises</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="_slides/lecture_mol_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="_slides/lecture_mol_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="exercises_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="exercises_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -28,79 +28,14 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      { color: #003b4f; background-color: #f1f3f5; }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span { color: #003b4f; } /* Normal */
-    code span.al { color: #ad0000; } /* Alert */
-    code span.an { color: #5e5e5e; } /* Annotation */
-    code span.at { color: #657422; } /* Attribute */
-    code span.bn { color: #ad0000; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; } /* ControlFlow */
-    code span.ch { color: #20794d; } /* Char */
-    code span.cn { color: #8f5902; } /* Constant */
-    code span.co { color: #5e5e5e; } /* Comment */
-    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
-    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
-    code span.dt { color: #ad0000; } /* DataType */
-    code span.dv { color: #ad0000; } /* DecVal */
-    code span.er { color: #ad0000; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #ad0000; } /* Float */
-    code span.fu { color: #4758ab; } /* Function */
-    code span.im { color: #00769e; } /* Import */
-    code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; } /* Keyword */
-    code span.op { color: #5e5e5e; } /* Operator */
-    code span.ot { color: #003b4f; } /* Other */
-    code span.pp { color: #ad0000; } /* Preprocessor */
-    code span.sc { color: #5e5e5e; } /* SpecialChar */
-    code span.ss { color: #20794d; } /* SpecialString */
-    code span.st { color: #20794d; } /* String */
-    code span.va { color: #111111; } /* Variable */
-    code span.vs { color: #20794d; } /* VerbatimString */
-    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="_slides/lecture_mol_files/libs/revealjs/dist/theme/quarto.css">
-  <link href="_slides/lecture_mol_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="_slides/lecture_mol_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="_slides/lecture_mol_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="_slides/lecture_mol_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-  <link href="_slides/lecture_mol_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-  <link href="_slides/lecture_mol_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="exercises_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="exercises_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="exercises_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="exercises_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="exercises_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="exercises_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="exercises_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -391,63 +326,105 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="index" class="slide level2 smaller scrollable">
-<h3>Numerical Methods for MFC CDT (part 2)</h3>
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Exercises</h1>
+  <p class="subtitle">Taken from the notes</p>
 
-<h4>Meetings</h4>
-<p>Meetings will use <a href="https://zoom.us/j/97372248643?pwd=NDpLvfWcvf540kC98MIMb7lS4rW9Jh.1">the same Zoom link as the rest of the course</a> (Meeting ID: 973 7224 8643 Passcode: 860204).</p>
+<div class="quarto-title-authors">
+</div>
 
-<h4>Notes</h4>
-<p>The <a href="_book-student/index.html">online version of the notes can be found here.</a> The download button will give access to multiple versions, but the <a href="_book-student/Numerical-Methods-for-MFC-CDT.pdf">PDF version can be found directly here.</a></p>
-
-<h4>Lectures</h4>
-
-<p>Recorded lectures (flipped classroom style) <a href="https://southampton.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?pid=73f6eca8-8a17-42f2-bc97-b21900a14c0d">can be found here.</a> The lecture slides can be found from the links below. Use the space bar or arrow keys to move between slides, 's' to show the speaker notes.</p>
-
-<ul>
-  <li>Week 6 (ish)
-    <ul>
-      <li><p><a href="_slides/lecture_mol.html">Method of Lines.</a></p></li>
-      <li><p><a href="_slides/lecture_spectral.html">Spectral Methods.</a></p></li>
-      <li><p><a href="_slides/lecture_fe1.html">Introduction to Finite Elements.</a></p></li>
-      <li><p><a href="_slides/lecture_fe2.html">Nodes vs Elements.</a></p></li>
-    </ul>
-  </li>
-  <li>Week 7 (ish)
-    <ul>
-      <li><p><a href="_slides/lecture_fe3.html">Elements in 2d</a></p></li>
-      <li><p><a href="_slides/lecture_fe4.html">Time evolution.</a></p></li>
-    </ul>
-  </li>
-  <li>Week 8 (ish)
-    <ul>
-      <li><p><a href="_slides/lecture_fe_dg.html">Discontinuous Galerkin</a></p></li>
-    </ul>
-  </li>
-</ul>
-
-<p>The <a href="./_assignment/assignment.html">assignment, due by Christmas, can be found here</a>. If preferred, a <a href="./_assignment/assignment.pdf">direct link to the PDF version is here</a>, but note that the links to the files containing the grids are best followed from the online version.</p>
-
-<p>The notes contain a range of exercises which are <a href="./_slides/exercises.html">summarised here</a>. The exercises should work through how to build a finite element solver in one and two dimensions, and will be the focus of the first few sessions.</p>
+</section>
+<section id="static-1d" class="slide level2">
+<h2>Static, 1d</h2>
+<p>Problem: <span class="math inline">\(\partial_{xx} \psi = -S\)</span> with <span class="math inline">\(\psi(0) = 0 = \partial_x \psi(1)\)</span>.</p>
+<ol type="1">
+<li>Compute (analytically) <span class="math inline">\(K_{AB}\)</span> for linear shape functions on three elements.</li>
+<li>Compute (analytically) <span class="math inline">\(F_B\)</span> when <span class="math inline">\(S(x) = 1 - x\)</span> on three elements.</li>
+<li>Solve (numerically) for <span class="math inline">\(\psi_A\)</span>; compare to <span class="math inline">\(\psi = x (x^2 - 3 x + 3) / 6\)</span>.</li>
+</ol>
+</section>
+<section id="static-1d-1" class="slide level2 smaller">
+<h2>Static, 1d</h2>
+<ol type="1">
+<li>Write a numerical FE solver on an evenly spaced grid with <span class="math inline">\(N_e\)</span> elements.</li>
+<li>First use simple BCs, check <span class="math inline">\(S = 1 - x\)</span> again.</li>
+<li>Check <span class="math inline">\(S = (1 - x)^2\)</span>; compare to <span class="math inline">\(\psi = x (4 - 6 x + 4 x^2 - x^3) / 12\)</span>. Check convergence with <span class="math inline">\(N_e\)</span>.</li>
+<li>Implement non-trivial BCs. Check</li>
+</ol>
+<p><span class="math display">\[
+S = \begin{cases} 1 &amp; |x - \tfrac{1}{2}| &lt; \tfrac{1}{4}, \\ 0 &amp; \text{otherwise} \end{cases}
+\]</span></p>
+<p>for which the solution is in the notes.</p>
+<ol start="5" type="1">
+<li>Use the method of manufactured solutions to create additional tests with non-trivial BCs.</li>
+<li>Extend your solver to use an arbitrary unstructured grid.</li>
+</ol>
+</section>
+<section id="static-2d" class="slide level2 scrollable smaller">
+<h2>Static, 2d</h2>
+<p>The problem is <span class="math inline">\(\nabla^2 \psi = -S\)</span>. Focus on homogeneous boundaries again.</p>
+<p>Write functions that</p>
+<ol type="1">
+<li>returns shape functions given reference coordinates <span class="math inline">\(\symbf{\xi}\)</span> in reference triangle;</li>
+<li>returns derivatives of shape functions wrt <span class="math inline">\(\symbf{\xi}\)</span> in reference triangle;</li>
+<li>gives global <span class="math inline">\(\mathbf{x}\)</span> of <span class="math inline">\(\symbf{\xi}\)</span>, given nodal <span class="math inline">\(\mathbf{x}\)</span>;</li>
+<li>gives Jacobian <span class="math inline">\(\partial_{\symbf{\xi}} \mathbf{x}\)</span> at location <span class="math inline">\(\symbf{\xi}\)</span>;</li>
+<li>gives the Jacobian determinant at <span class="math inline">\(\symbf{\xi}\)</span>;</li>
+<li>gives <span class="math inline">\(\partial_{\mathbf{x}} N_a = J^{-1} \partial_{\symbf{\xi}} N_a\)</span>;</li>
+<li>integrates <span class="math inline">\(\phi(\symbf{\xi})\)</span> over the reference triangle;</li>
+<li>integrates <span class="math inline">\(\psi(\mathbf{x})\)</span> over an element;</li>
+<li>computes the local stiffness matrix;</li>
+<li>computes the local force vector.</li>
+</ol>
+</section>
+<section id="static-2d-1" class="slide level2 smaller">
+<h2>Static, 2d</h2>
+<p>Use Neumann boundaries except where <span class="math inline">\(x=0\)</span>: there use Dirichlet. Use the grid generation code from the notes (or write similar.)</p>
+<ol type="1">
+<li>Check <span class="math inline">\(S(x, y) = 1 \implies \psi = x (1 - x/2)\)</span>.</li>
+<li>Check the one-dimensional examples in 2d (where BCs allow).</li>
+<li>Check</li>
+</ol>
+<p><span class="math display">\[
+S = 2 x (x - 2) (3 y^2 - 3 y + \tfrac{1}{2}) + y^2 (y - 1)^2
+\]</span></p>
+<p>with solution</p>
+<p><span class="math display">\[
+\psi = x (1 - \tfrac{x}{2}) y^2 (1 - y)^2 .
+\]</span></p>
+</section>
+<section id="time-evolution-1d" class="slide level2">
+<h2>Time evolution, 1d</h2>
+<ol type="1">
+<li>Compute the form of the stiffness matrix and force vector for an even grid for advection.</li>
+<li>Re-compute for advection-diffusion.</li>
+<li>Starting from the static code, write a function to compute the time derivative of <span class="math inline">\(\psi\)</span> on the grid.</li>
+<li>Test with simple initial data and BCs as in previous examples.</li>
+</ol>
+<div class="quarto-auto-generated-content">
+<div class="footer footer-default">
+<p><a href="https://ianhawke.github.io/mfc_cdt_numerics" class="uri">https://ianhawke.github.io/mfc_cdt_numerics</a></p>
+</div>
+</div>
 </section>
     </div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="_slides/lecture_mol_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="exercises_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="_slides/lecture_mol_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="_slides/lecture_mol_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="_slides/lecture_mol_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="_slides/lecture_mol_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="_slides/lecture_mol_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
-  <script src="_slides/lecture_mol_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="exercises_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="exercises_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="exercises_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="exercises_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="exercises_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="exercises_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="_slides/lecture_mol_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="_slides/lecture_mol_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="_slides/lecture_mol_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="_slides/lecture_mol_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="exercises_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="exercises_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="exercises_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="exercises_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
