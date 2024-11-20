@@ -338,7 +338,11 @@ window.Quarto = {
   <li><a href="#boundary-conditions" id="toc-boundary-conditions" class="nav-link" data-scroll-target="#boundary-conditions"><span class="header-section-number">3.2</span> Boundary conditions</a></li>
   <li><a href="#weak-form" id="toc-weak-form" class="nav-link" data-scroll-target="#weak-form"><span class="header-section-number">3.3</span> Weak form</a></li>
   <li><a href="#function-representation" id="toc-function-representation" class="nav-link" data-scroll-target="#function-representation"><span class="header-section-number">3.4</span> Function representation</a></li>
-  <li><a href="#the-element-viewpoint" id="toc-the-element-viewpoint" class="nav-link" data-scroll-target="#the-element-viewpoint"><span class="header-section-number">3.5</span> The element viewpoint</a></li>
+  <li><a href="#the-element-viewpoint" id="toc-the-element-viewpoint" class="nav-link" data-scroll-target="#the-element-viewpoint"><span class="header-section-number">3.5</span> The element viewpoint</a>
+  <ul class="collapse">
+  <li><a href="#neumann-boundary-conditions" id="toc-neumann-boundary-conditions" class="nav-link" data-scroll-target="#neumann-boundary-conditions"><span class="header-section-number">3.5.1</span> Neumann boundary conditions</a></li>
+  <li><a href="#dirichlet-boundary-conditions" id="toc-dirichlet-boundary-conditions" class="nav-link" data-scroll-target="#dirichlet-boundary-conditions"><span class="header-section-number">3.5.2</span> Dirichlet boundary conditions</a></li>
+  </ul></li>
   <li><a href="#linking-elements-to-equations" id="toc-linking-elements-to-equations" class="nav-link" data-scroll-target="#linking-elements-to-equations"><span class="header-section-number">3.6</span> Linking elements to equations</a></li>
   <li><a href="#algorithm" id="toc-algorithm" class="nav-link" data-scroll-target="#algorithm"><span class="header-section-number">3.7</span> Algorithm</a></li>
   </ul>
@@ -476,7 +480,7 @@ K_{AB} = \int_0^1 \partial_x N_A(x) \partial_x N_B(x) \, \text{d}x
 <p>and the coefficients of the <em>force vector</em> <span class="math inline">\(\mathbf{F}\)</span> are given by</p>
 <p><span id="eq-fe1-force-vector"><span class="math display">\[
 \begin{split}
-F_B = \beta \delta^{N_\text{elements}}_B + \int_0^1 N_B(x) S(x) \, \text{d}x \, - \alpha \int_0^1 \partial_x N_A(x) \partial_x N_B(x) \, \text{d}x .
+F_B = \beta \delta^{N_\text{elements}}_B + \int_0^1 N_B(x) S(x) \, \text{d}x \, - \alpha \int_0^1 \partial_x N_0(x) \partial_x N_B(x) \, \text{d}x .
 \end{split}
 \tag{3.15}\]</span></span></p>
 <p>Here <span class="math inline">\(\delta^C_B\)</span> is the Kronecker delta (zero except when <span class="math inline">\(B \equiv C\)</span>, where it is one) and encodes the Neumann boundary value.</p>
@@ -544,6 +548,52 @@ F_{N_\text{elements}} \to F_{N_\text{elements}} + \beta.
 F_0 \to F_0 - \alpha k^0_{12}.
 \tag{3.24}\]</span></span></p>
 <p>(Note that the numbering here has the first element number <span class="math inline">\(e=0\)</span> and the local labels <span class="math inline">\(a \in \{1, 2\}\)</span>)</p>
+<section id="neumann-boundary-conditions" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="neumann-boundary-conditions"><span class="header-section-number">3.5.1</span> Neumann boundary conditions</h3>
+<p>The correction term for Neumann boundary conditions is the easier case to check. Assume that <span class="math inline">\(x_C\)</span> is the node on the Neumann obundary (above <span class="math inline">\(x_C = x_{N_e} = 1\)</span>), and that <span class="math inline">\(\partial_x \psi(x_{N_e}) = \beta\)</span>. Then we have</p>
+<p><span class="math display">\[
+\begin{aligned}
+\int_0^1 w \partial_{xx} \psi &amp;= \left[ w \partial_x \psi \right]_0^1 - \int_0^1 \partial_x w \partial_x \psi \\
+&amp;= w(1) \beta - (w \partial_x \psi)(0) - \int_0^1 \partial_x w \partial_x \psi \\
+&amp;= - \int_0^1 w S \, .
+\end{aligned}
+\]</span></p>
+<p>Using the standard function basis expansion we have</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;&amp; w_{N_e} \beta - w_0 \psi_0 (\partial_x N_0)(0) - \sum_B w_B \sum_A \psi_A \int_0^1 \partial_x N_B \partial_x N_A &amp;= - \sum_B w_B \int_0^1 N_B S \\
+\implies &amp;&amp; K_{AB} \psi A &amp;= F_B \, , \\
+&amp;&amp; F_{N_e} &amp;= \int_0^1 N_{N_e} S - \beta \, .
+\end{aligned}
+\]</span></p>
+<p>That is, the standard force vector term on the Neumann boundary is corrected by the value of the Neumann boundary condition. We also note that the value at the left boundary is linked to <span class="math inline">\(w_0\)</span> and hence to <span class="math inline">\(\psi_0\)</span>, which is not included in the vector to be solved (as it lies on a Dirichlet boundary).</p>
+</section>
+<section id="dirichlet-boundary-conditions" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="dirichlet-boundary-conditions"><span class="header-section-number">3.5.2</span> Dirichlet boundary conditions</h3>
+<p>The correction term for Dirichlet boundary conditions may not be obvious. This is a bit more annoying to construct as the solution is not computed at the boundary node where the Dirichlet condition holds. That is because each node we have to compute increases the size of the linear system, making it harder and more expensive to solve. Instead we want to incorporate the effect of the boundary condition at a given node into the system through its impact on its neighbours.</p>
+<p>We do this by a standard trick seen in the solution of PDEs with inhomogeneous boundary conditions: change variable to a variable that satisfies a similar PDE but with <em>homogeneous</em> boundary conditions. We can do this in many ways, but in finite elements, when using shape functions, there is one particularly neat choice.</p>
+<p>Assume that <span class="math inline">\(x_C\)</span> is the node on the Dirichlet boundary (above <span class="math inline">\(x_C = x_0 = 0\)</span>), and that <span class="math inline">\(\psi(x_C) = \psi_C = \alpha\)</span>. Choose <span class="math inline">\(\phi(x) = \psi(x) - \alpha N_C(x)\)</span>. As <span class="math inline">\(N_C\)</span> is an indicator function (so is one at the node <span class="math inline">\(x_C\)</span> and zero at all other nodes) we have that <span class="math inline">\(\phi(x_C) = \phi_C = 0\)</span> and <span class="math inline">\(\phi(x_A) = \psi(x_A)\)</span> on all nodes not on that particular Dirichlet boundary. Therefore <span class="math inline">\(\phi\)</span> satisfies a homogeneous Dirichlet boundary condition, and matches the solution that we want at all interior points. It also does not interfere with the other boundary condition (unless we are working with a single element!).</p>
+<p>We need to check the impact this has on the discrete equation. Focus on <span class="math inline">\(x_C = x_0 = 0\)</span>; the argument is identical for other cases. We have</p>
+<p><span class="math display">\[
+\begin{aligned}
+\int_0^1 w \partial_{xx} \psi &amp;= \int_0^1 w \partial_{xx} \phi + \alpha \int_0^1 w \partial_{xx} N_0 \\
+&amp;= \left[ w \partial_x \phi \right]_0^1 - \int_0^1 \partial_x w \partial_x \phi + \\
+&amp;\quad \alpha \left[ w \partial_x N_0 \right]_0^1 - \alpha \int_0^1 \partial_x w \partial_x N_0 \\
+&amp;= - \int_0^1 w S \, .
+\end{aligned}
+\]</span></p>
+<p>Plugging in the usual basis function expansions and moving the terms to the conventional places we find</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_B w_B \sum_A \phi_A K_{AB} &amp;= \sum_B w_B \bigg\{ \int_0^1 N_B S - \\
+&amp;\quad - \left[ N_B \sum_A \phi_A \partial_x N_A \right](0) + \alpha \left[ N_B \partial_x N_0 \right](0) - \\
+&amp;\quad - \alpha \int_0^1 \partial_x N_B \partial_x N_0 \bigg\} \, .
+\end{aligned}
+\]</span></p>
+<p>We see that the first line gives the standard <span class="math inline">\(K \symbf{\phi} = \symbf{F}\)</span> form. The last line is precisely the correction using the element <span class="math inline">\(K_{B0}\)</span> of the stiffness matrix. In principle this correction is applied to every element of the force vector; however, only when <span class="math inline">\(N_B\)</span> and <span class="math inline">\(N_0\)</span> overlap (that is, only when <span class="math inline">\(x_B\)</span> is next to the Dirichlet boundary node <span class="math inline">\(x_0\)</span>) is the overlap integral non-zero.</p>
+<p>The second line cancels identically. This is because the terms are all evaluated at <span class="math inline">\(x=0\)</span>. The only non-zero contributions can come from the case <span class="math inline">\(B=0\)</span> (as otherwise the undifferentiated indicator function <span class="math inline">\(N_B\)</span> vanishes), which would modify a term that is not included in the force vector.</p>
+<p>Hence we get the expected result: if element <span class="math inline">\(e\)</span> contains a (global) node <span class="math inline">\(A\)</span> that lies on a Dirichlet boundary, then the force vector at all other nodes <span class="math inline">\(B\)</span> within the element must be corrected by <span class="math inline">\(-\psi(x_A) K_{AB}\)</span>.</p>
+</section>
 </section>
 <section id="linking-elements-to-equations" class="level2" data-number="3.6">
 <h2 data-number="3.6" class="anchored" data-anchor-id="linking-elements-to-equations"><span class="header-section-number">3.6</span> Linking elements to equations</h2>

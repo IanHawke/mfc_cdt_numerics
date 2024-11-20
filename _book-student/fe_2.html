@@ -316,7 +316,10 @@ window.Quarto = {
   <ul>
   <li><a href="#elements" id="toc-elements" class="nav-link active" data-scroll-target="#elements"><span class="header-section-number">4.1</span> Elements</a></li>
   <li><a href="#function-representation-and-shape-functions" id="toc-function-representation-and-shape-functions" class="nav-link" data-scroll-target="#function-representation-and-shape-functions"><span class="header-section-number">4.2</span> Function representation and shape functions</a></li>
-  <li><a href="#algorithm" id="toc-algorithm" class="nav-link" data-scroll-target="#algorithm"><span class="header-section-number">4.3</span> Algorithm</a></li>
+  <li><a href="#algorithm" id="toc-algorithm" class="nav-link" data-scroll-target="#algorithm"><span class="header-section-number">4.3</span> Algorithm</a>
+  <ul class="collapse">
+  <li><a href="#boundary-conditions" id="toc-boundary-conditions" class="nav-link" data-scroll-target="#boundary-conditions"><span class="header-section-number">4.3.1</span> Boundary conditions</a></li>
+  </ul></li>
   <li><a href="#grid-generation" id="toc-grid-generation" class="nav-link" data-scroll-target="#grid-generation"><span class="header-section-number">4.4</span> Grid generation</a></li>
   <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise"><span class="header-section-number">4.5</span> Exercise</a></li>
   </ul>
@@ -537,6 +540,12 @@ Figure&nbsp;4.2: The standard reference triangle.
   f^e_b = \int_{\triangle^e} \text{d}\triangle^e \, N_b(x, y) S(x, y).
 \tag{4.17}\]</span></span></li>
 </ol>
+<section id="boundary-conditions" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="boundary-conditions"><span class="header-section-number">4.3.1</span> Boundary conditions</h3>
+<p><em>In principle</em>, the application of boundary conditions in more than one dimension precisely matches that seen in the one dimensional case. The practical implementation, as with all things in higher dimensions, can be more complex.</p>
+<p>For Dirichlet boundaries, if an element has a node on a boundary, then every node within that element that is connected to the Dirichlet node needs updating using an appropriate multiple of the local stiffness matrix. For example, suppose that global node <span class="math inline">\(x_C\)</span> is on the Dirichlet boundary <span class="math inline">\(\Gamma_D\)</span> and the solution takes the value <span class="math inline">\(\alpha\)</span> there. Further suppose that <span class="math inline">\(x_C\)</span> is mapped to <em>local</em> node <span class="math inline">\(0\)</span> in the reference element. Finally, assume that the local node <span class="math inline">\(b\)</span> within the same element is not on the Dirichlet boundary (so must be solved for), and is linked to global node <span class="math inline">\(x_B\)</span>. Then the component of the force vector <span class="math inline">\(F_B\)</span> must be updated by <span class="math inline">\(-\alpha k^{(e)}_{0b}\)</span>.</p>
+<p>For Neumann boundary conditions, the force vector is directly updated using the value of the boundary condition. <em>However</em>, in this case we have to note that the boundary contribution involves the surface integral over <span class="math inline">\(\Gamma_N\)</span> (which will be a line integral in two dimensions). Therefore the update to <span class="math inline">\(F_B\)</span> is not just the value <span class="math inline">\(\beta = \partial_x \psi(x_B)\)</span>, but must also weight it by the length of the edge within the element that lies in the Neumann boundary. Suppose that <span class="math inline">\(x_B\)</span> and <span class="math inline">\(x_C\)</span> are both nodes of the same element, <em>and</em> that the edge connecting them lies within the Neumann boundary, <em>and</em> that this edge has length <span class="math inline">\(\ell\)</span>. Using a mid-point rule approximation to the line integral along the edge, <em>both</em> <span class="math inline">\(F_B\)</span> and <span class="math inline">\(F_C\)</span> should be updated by <span class="math inline">\(\beta \ell / 2\)</span>. Better approximations to the integral may be needed for accuracy reasons, and in higher dimensions than two.</p>
+</section>
 </section>
 <section id="grid-generation" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="grid-generation"><span class="header-section-number">4.4</span> Grid generation</h2>
